@@ -1,0 +1,2022 @@
+<!doctype html>
+<html lang="ku" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080f1a">
+<title>E21Flashcard — English ↔ کوردی</title>
+<style>
+:root {
+    --bg: #05080f;
+    --panel: #0b1526;
+    --panel-glass: rgba(11, 21, 38, 0.7);
+    --line: #1c2b48;
+    --accent: #2f6fed;      /* شینی تۆخ (dark/deep blue) - سەرەکی */
+    --accent-2: #7dd3fc;    /* شینی کاڵ (light blue) - لاوەکی */
+    --navy: #101d3d;        /* ناڤی */
+    --navy-light: #1a2c54;  /* ناڤی کاڵ */
+    --navy-dark: #060b1a;   /* ناڤی تۆخ */
+    --cream: #f0e9da;       /* کرێمی */
+    --pistachio: #cdbd97;   /* فستقی (بەژی/تان، نەک سەوز) */
+    --gold: #cdbd97;
+    --text: #e9e6dc;
+    --muted: #7688a8;
+    --white: #ffffff;
+    --bad: #ff5d6c;
+    --ok: #2f6fed;
+    --radius: 18px;
+}
+@media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+* { box-sizing: border-box; transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease; }
+body {
+    margin: 0; background: var(--bg); color: var(--text);
+    background-image: radial-gradient(circle at 15% 0%, rgba(47,111,237,0.10), transparent 40%), radial-gradient(circle at 85% 20%, rgba(125,211,252,0.08), transparent 45%);
+    font-family: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+    min-height: 100vh; line-height: 1.6;
+}
+button, input, textarea, select { font: inherit; border: none; border-radius: 10px; }
+button { cursor: pointer; font-weight: 700; transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+button:active { transform: scale(0.95); }
+button:focus-visible, .nav:focus-visible, .radio-pill:focus-visible, .deck:focus-visible { outline: 2px solid var(--accent-2); outline-offset: 2px; }
+.app { max-width: 1000px; margin: auto; padding: 20px; }
+
+header {
+    display: flex; justify-content: space-between; align-items: center; gap: 20px;
+    padding: 15px 20px; position: sticky; top: 0; z-index: 100;
+    background: var(--panel-glass); backdrop-filter: blur(16px) saturate(180%);
+    border-bottom: 1px solid rgba(255,255,255,0.06); margin: 0 -20px;
+}
+.brand { display: flex; gap: 12px; align-items: center; }
+.logo { 
+    width: 55px; height: 45px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: var(--bg);
+    border-radius: 12px; display: grid; place-items: center; font-size: 18px; font-weight: 900;
+}
+.brand h1 { margin: 0; font-size: 22px; color: var(--white); }
+nav { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.nav { 
+    background: transparent; color: var(--muted); padding: 8px 15px; border: 1px solid transparent;
+    transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.nav.active { color: var(--accent); border-color: var(--accent); background: rgba(47, 111, 237, 0.15); }
+
+.view { display: none; animation: fadeIn 0.4s ease; }
+.view.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+.hero { padding: 30px 0; text-align: center; }
+.hero h2 { font-size: 32px; color: var(--white); margin-bottom: 10px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+.stat { background: var(--panel-glass); backdrop-filter: blur(10px); padding: 20px; border-radius: var(--radius); border: 1px solid rgba(255,255,255,0.06); border-bottom: 3px solid var(--accent); text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.25); transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.stat:hover { transform: translateY(-3px); }
+.stat b { display: block; font-size: 28px; color: var(--accent); }
+.stat span { font-size: 13px; color: var(--muted); }
+
+.level-card { background: linear-gradient(135deg, var(--panel-glass), rgba(47,111,237,0.14)); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius); padding: 20px 24px; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+.level-badge { font-size: 20px; font-weight: 800; color: var(--white); margin-bottom: 10px; }
+.level-progress-track { height: 10px; background: var(--line); border-radius: 10px; overflow: hidden; }
+.level-progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); width: 0; border-radius: 10px; transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.level-hint { font-size: 12px; color: var(--muted); margin-top: 8px; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 25px; }
+.deck { 
+    background: var(--panel-glass); backdrop-filter: blur(10px); padding: 20px; border-radius: var(--radius); 
+    border: 1px solid rgba(255,255,255,0.06); position: relative; overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25); transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.deck:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 16px 40px rgba(47,111,237,0.22); }
+.deck h3 { margin: 0 0 8px; color: var(--white); }
+.progress-mini { height: 6px; background: var(--line); border-radius: 10px; margin: 12px 0; overflow: hidden; }
+.progress-bar { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); width: 0; transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+.btn-play { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: var(--bg); width: 100%; padding: 12px; margin-top: 10px; }
+.btn-play:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.study-container { max-width: 600px; margin: auto; }
+.study-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; font-size: 14px; color: var(--muted); }
+.card { height: 440px; perspective: 1200px; cursor: pointer; }
+.inner { 
+    position: relative; width: 100%; height: 100%; text-align: center; 
+    transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1); transform-style: preserve-3d; 
+}
+.card.flip .inner { transform: rotateY(180deg); }
+.face { 
+    position: absolute; width: 100%; height: 100%; backface-visibility: hidden; 
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 30px; border-radius: 28px; background: var(--white); color: #111;
+    box-shadow: 0 25px 60px -12px rgba(47,111,237,0.35), 0 10px 25px rgba(0,0,0,0.35); border: 4px solid var(--accent);
+    overflow-y: auto;
+}
+.back { transform: rotateY(180deg); background: var(--panel); color: var(--white); border-color: var(--accent-2); }
+.big-text { font-size: 46px; font-weight: 800; margin: 15px 0; }
+.sub-text { font-size: 18px; opacity: 0.9; max-width: 90%; }
+.mn-box { 
+    margin-top: 20px; padding: 12px; background: rgba(255,255,255,0.05); 
+    border-radius: 12px; font-size: 14px; border: 1px dashed var(--line);
+}
+
+.controls { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 25px; }
+.controls button { padding: 15px 5px; color: white; font-size: 14px; }
+.btn-again { background: #ff5d6c22; border: 1px solid #ff5d6c; color: #ff5d6c; }
+.btn-hard { background: #ffa50022; border: 1px solid #ffa500; color: #ffa500; }
+.btn-good { background: #2f6fed22; border: 1px solid var(--accent); color: var(--accent); }
+.btn-easy { background: #7dd3fc22; border: 1px solid var(--accent-2); color: var(--accent-2); }
+.kbd-hint { text-align: center; font-size: 12px; color: var(--muted); margin-top: 14px; }
+.kbd-hint kbd { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; font-family: inherit; }
+
+/* --- focus mode (V2 spec): کاتی خوێندن سەرپەڕ کەمتر بەرچاو دەبێت --- */
+body.focus-active header { opacity: 0.35; }
+body.focus-active header:hover, body.focus-active header:focus-within { opacity: 1; }
+
+/* --- heatmap --- */
+.heatmap-wrap { overflow-x: auto; padding: 15px; background: var(--panel-glass); backdrop-filter: blur(10px); border-radius: var(--radius); margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.06); box-shadow: 0 10px 30px rgba(0,0,0,0.22); }
+.heatmap-grid { display: grid; grid-template-rows: repeat(7, 1fr); grid-auto-flow: column; gap: 3px; width: max-content; }
+.heat-cell { width: 11px; height: 11px; border-radius: 3px; background: var(--line); }
+.heat-cell.level-1 { background: #17264a; }
+.heat-cell.level-2 { background: #1e3a72; }
+.heat-cell.level-3 { background: #2f5fc4; }
+.heat-cell.level-4 { background: var(--accent); }
+
+/* --- daily missions --- */
+.mission-row { margin-bottom: 12px; }
+.mission-row:last-child { margin-bottom: 0; }
+.mission-label { font-size: 13px; margin-bottom: 6px; color: var(--text); }
+.mission-row.done .mission-label { color: var(--accent); }
+
+/* --- motivation card (V2 spec: هەر ٥ کارتێک) --- */
+.motivation-overlay { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; background: linear-gradient(135deg, var(--panel-glass), rgba(47,111,237,0.14)); backdrop-filter: blur(10px); border-radius: 28px; padding: 40px 30px; text-align: center; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+.motivation-overlay.active { display: flex; }
+.motivation-icon { font-size: 40px; margin-bottom: 15px; }
+.motivation-en { font-size: 20px; color: var(--white); font-weight: 700; direction: ltr; margin-bottom: 12px; line-height: 1.5; }
+.motivation-ku { font-size: 16px; color: var(--accent); margin-bottom: 14px; line-height: 1.7; }
+.motivation-author { font-size: 13px; color: var(--muted); }
+
+/* --- pomodoro --- */
+.pomo-mini-badge { position: fixed; top: 14px; left: 14px; z-index: 200; background: var(--accent); color: var(--bg); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 16px rgba(0,0,0,0.35); align-items: center; }
+.pomo-wrap { max-width: 420px; margin: 30px auto; text-align: center; background: var(--panel-glass); backdrop-filter: blur(10px); border-radius: var(--radius); padding: 40px 30px; border: 1px solid rgba(255,255,255,0.06); box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+.pomo-dots { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+.pomo-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--line); }
+.pomo-dot.done { background: var(--accent); }
+.pomo-dot.active { background: var(--gold); box-shadow: 0 0 0 4px rgba(205,189,151,0.25); }
+.pomo-phase { font-size: 16px; color: var(--muted); margin-bottom: 10px; letter-spacing: 1px; }
+.pomo-time { font-size: 64px; font-weight: 900; color: var(--white); font-variant-numeric: tabular-nums; margin-bottom: 25px; }
+.pomo-controls { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+.pomo-stats { font-size: 14px; color: var(--muted); }
+
+/* --- import preview --- */
+.import-preview { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 15px; }
+.import-preview-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 14px; }
+.import-preview-body { max-height: 280px; overflow-y: auto; border: 1px solid var(--line); border-radius: 10px; }
+.preview-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+.preview-row:last-child { border-bottom: none; }
+.preview-row-text { display: flex; flex-direction: column; }
+.preview-en { color: var(--white); font-size: 14px; }
+.preview-ku { color: var(--muted); font-size: 12px; }
+.preview-row-dupe { opacity: 0.6; }
+.dupe-badge { display:inline-block; font-size: 10px; background: #ffa50022; color: #ffa500; border: 1px solid #ffa500; border-radius: 8px; padding: 1px 6px; margin-right: 6px; }
+
+.panel { background: var(--panel-glass); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.06); box-shadow: 0 10px 30px rgba(0,0,0,0.22); padding: 20px; border-radius: var(--radius); margin-bottom: 20px; }
+textarea, input { 
+    width: 100%; background: var(--bg); color: var(--white); border: 1px solid var(--line); 
+    padding: 12px; margin: 8px 0; outline: none;
+}
+textarea:focus, input:focus { border-color: var(--accent); }
+.primary { background: var(--accent); color: var(--bg); padding: 12px 25px; }
+.ghost { background: transparent; color: var(--accent); border: 1px solid var(--accent); padding: 11px 24px; }
+
+/* --- manage list --- */
+.manage-item { padding: 12px 6px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.manage-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.icon-btn { background: none; color: var(--muted); padding: 6px 12px; font-size: 13px; border: 1px solid var(--line); border-radius: 8px; }
+.icon-btn:hover { color: var(--accent); border-color: var(--accent); }
+.icon-btn.danger:hover { color: var(--bad); border-color: var(--bad); }
+.edit-form { display: flex; flex-direction: column; gap: 4px; width: 100%; }
+.edit-form input { margin: 0; padding: 8px; font-size: 13px; }
+.edit-form-actions { display: flex; gap: 8px; margin-top: 4px; }
+.edit-form-actions button { padding: 8px 16px; font-size: 13px; }
+
+/* --- settings --- */
+.setting-row { margin-bottom: 20px; }
+.setting-row label.title { display: block; margin-bottom: 8px; color: var(--white); font-size: 14px; font-weight: 700; }
+.radio-group { display: flex; gap: 10px; flex-wrap: wrap; }
+.radio-pill { padding: 10px 16px; border: 1px solid var(--line); border-radius: 20px; color: var(--muted); cursor: pointer; font-size: 13px; font-weight: 600; }
+.radio-pill.active { border-color: var(--accent); color: var(--accent); background: rgba(47,111,237,0.14); }
+.hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
+hr.sep { border: none; border-top: 1px solid var(--line); margin: 22px 0; }
+
+/* --- loader --- */
+.loader { position: fixed; inset: 0; background: var(--bg); z-index: 999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; }
+.loader.hidden { display: none; }
+.spinner { width: 40px; height: 40px; border: 3px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* --- toast --- */
+.toast-wrap { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 500; display: flex; flex-direction: column; gap: 8px; align-items: center; pointer-events: none; }
+.toast { background: var(--panel); border: 1px solid var(--accent); color: var(--white); padding: 12px 20px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.45); font-size: 14px; opacity: 0; transform: translateY(10px); animation: toastIn 0.25s ease forwards, toastOut 0.25s ease forwards 2.3s; white-space: nowrap; }
+@keyframes toastIn { to { opacity: 1; transform: translateY(0); } }
+@keyframes toastOut { to { opacity: 0; transform: translateY(-8px); } }
+
+@media (max-width: 600px) {
+    header { flex-direction: column; text-align: center; }
+    nav { justify-content: center; }
+    .controls { grid-template-columns: 1fr 1fr; }
+    .big-text { font-size: 32px; }
+    .toast { white-space: normal; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div id="loader" class="loader">
+    <div class="spinner"></div>
+    <div style="color: var(--muted); font-size: 14px;">بارکردنی داتاکان...</div>
+</div>
+
+<div id="pomo-mini-badge" class="pomo-mini-badge" style="display:none;" onclick="showV('pomodoro')">🍅 25:00</div>
+
+<div class="app">
+    <header>
+        <div class="brand">
+            <div class="logo">E21</div>
+            <div>
+                <h1>E21Flashcard</h1>
+                <div style="font-size: 11px; color: var(--accent)">English ↔ Kurdish</div>
+            </div>
+        </div>
+        <nav>
+            <button class="nav active" data-view="home" onclick="showV('home')">سەرەکی</button>
+            <button class="nav" data-view="study" onclick="showV('study')">خوێندن</button>
+            <button class="nav" data-view="pomodoro" onclick="showV('pomodoro')">🍅 پۆمۆدۆرۆ</button>
+            <button class="nav" data-view="add" onclick="showV('add')">زیادکردن</button>
+            <button class="nav" data-view="manage" onclick="showV('manage')">کارتەکان</button>
+            <button class="nav" data-view="settings" onclick="showV('settings')">ڕێکخستن</button>
+        </nav>
+    </header>
+
+    <section id="home" class="view active">
+        <div class="hero">
+            <h2>بەخێربێیت بۆ E21Flashcard</h2>
+            <p style="color: var(--muted)">زیرەکانەترین ڕێگە بۆ فێربوونی زمان.</p>
+        </div>
+
+        <div class="level-card">
+            <div class="level-badge" id="level-badge">🌱 تازەکار</div>
+            <div class="level-progress-track"><div id="level-progress-fill" class="level-progress-fill"></div></div>
+            <div class="level-hint" id="level-hint">0 / 100 XP</div>
+        </div>
+
+        <div class="heatmap-wrap">
+            <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">🔥 ئەکتیڤیێتی ساڵانە</div>
+            <div id="heatmap-grid" class="heatmap-grid"></div>
+        </div>
+
+        <div class="panel" id="missions-panel">
+            <h3 style="margin-top:0; font-size:15px;">🎯 ئەرکی ڕۆژانە</h3>
+            <div id="missions-list"></div>
+        </div>
+
+        <div class="stats">
+            <div class="stat"><b id="count-reviews-today">0</b><span>پێداچوونەوەی ئەمڕۆ</span></div>
+            <div class="stat"><b id="count-new-today">0</b><span>کارتی نوێی ئەمڕۆ</span></div>
+            <div class="stat"><b id="count-streak">0</b><span>🔥 streak</span></div>
+            <div class="stat"><b id="count-xp">0</b><span>کۆی XP</span></div>
+            <div class="stat"><b id="count-due">0</b><span>چاوەڕوانی پێداچوونەوە</span></div>
+            <div class="stat" style="cursor:pointer;" onclick="showV('archive')"><b id="count-mastered">0</b><span>تەواو فێربوو (🗄 ئارشیف)</span></div>
+            <div class="stat"><b id="count-studytime">0:00</b><span>کاتی خوێندنی ئەمڕۆ</span></div>
+            <div class="stat" style="cursor:pointer;" onclick="goToDifficultWords()"><b id="count-difficult">0</b><span>🔥 وشە سەختەکان</span></div>
+        </div>
+        <div id="deck-list" class="grid"></div>
+    </section>
+
+    <section id="study" class="view">
+        <div class="study-container">
+            <div class="study-header">
+                <button class="icon-btn" onclick="showV('home')" aria-label="گەڕانەوە بۆ سەرەکی" style="flex-shrink:0;">⟵ سەرەکی</button>
+                <span id="study-deck-name">E21 Deck</span>
+                <span id="study-progress-text">0 / 0</span>
+            </div>
+            <div id="study-progress-container" class="progress-mini" style="margin-bottom: 20px;">
+                <div id="study-progress-bar" class="progress-bar"></div>
+            </div>
+
+            <div id="card-obj" class="card" onclick="flipCard()">
+                <div class="inner">
+                    <div class="face" id="face-front">
+                        <div style="font-size: 12px; color: var(--muted); letter-spacing: 2px;" id="q-lang">ENGLISH</div>
+                        <div class="big-text" id="q-text">Word</div>
+                        <div class="sub-text" id="q-extra"></div>
+                        <div id="front-extra"></div>
+                        <div style="margin-top: 16px; font-size: 12px; color: #aaa;">بۆ بینینی وەڵام کلیک بکە</div>
+                    </div>
+                    <div class="face back" id="face-back">
+                        <div style="font-size: 12px; color: var(--accent);" id="a-lang">کوردی</div>
+                        <div class="big-text" id="a-text">وشە</div>
+                        <div id="back-extra"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="motivation-overlay" class="motivation-overlay">
+                <div class="motivation-icon">✨</div>
+                <div class="motivation-en" id="motivation-en"></div>
+                <div class="motivation-ku" id="motivation-ku"></div>
+                <div class="motivation-author" id="motivation-author"></div>
+                <button class="primary" style="margin-top:20px;" onclick="dismissMotivationCard()">درێژەبدە ⟶</button>
+            </div>
+
+            <div class="controls">
+                <button class="btn-again" onclick="submitRate(1)">دووبارە</button>
+                <button class="btn-hard" onclick="submitRate(2)">سەخت</button>
+                <button class="btn-good" onclick="submitRate(3)">باش</button>
+                <button class="btn-easy" onclick="submitRate(4)">ئاسان</button>
+            </div>
+            <div class="kbd-hint">کلیل: <kbd>Space</kbd> بۆ وەرگێڕان • <kbd>1</kbd>-<kbd>4</kbd> بۆ هەڵسەنگاندن</div>
+        </div>
+    </section>
+
+    <section id="pomodoro" class="view">
+        <div class="pomo-wrap">
+            <div class="pomo-dots">
+                <span class="pomo-dot"></span><span class="pomo-dot"></span><span class="pomo-dot"></span><span class="pomo-dot"></span>
+            </div>
+            <div class="pomo-phase" id="pomo-phase-label">ئامادەبە</div>
+            <div class="pomo-time" id="pomo-time">25:00</div>
+            <div class="pomo-controls">
+                <button id="pomo-start-btn" class="primary" onclick="pomoStart()">▶ دەستپێکردن</button>
+                <button id="pomo-pause-btn" class="ghost" style="display:none;" onclick="pomoPause()">⏸ وەستان</button>
+                <button class="icon-btn" onclick="pomoSkip()">⏭ تێپەڕین</button>
+                <button class="icon-btn" onclick="pomoReset()">↺ ڕێستارت</button>
+            </div>
+            <div class="pomo-stats">🍅 ئەمڕۆ: <b id="pomo-today-count">0</b> • کۆی گشتی: <b id="pomo-total-count">0</b></div>
+            <div class="hint" style="margin-top:10px;">٢٥ خولەک خوێندن → ٥ خولەک پشوو، دوای ٤ جار پشووی ٣٠ خولەکە. هەر پۆمۆدۆرۆیەکی تەواوبوو ٥٠ XP دەدات.</div>
+        </div>
+    </section>
+
+    <section id="archive" class="view">
+        <div class="panel">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h3 style="margin:0;">🗄 ئارشیفی فێربووەکان</h3>
+                <button class="icon-btn" onclick="showV('home')">⟵ گەڕانەوە</button>
+            </div>
+            <div id="archive-list"></div>
+        </div>
+    </section>
+
+    <section id="add" class="view">
+        <div class="panel">
+            <h3>🗂 دەستەکان</h3>
+            <div id="deck-manager-list"></div>
+            <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+                <input id="new-deck-name" placeholder="ناوی دەستەی نوێ (نموونە: IELTS, Phrasal Verbs)" style="margin:0; flex:1; min-width:180px;">
+                <button class="primary" onclick="handleCreateDeck()" style="flex-shrink:0;">➕ دروستکردن</button>
+            </div>
+        </div>
+        <div class="panel">
+            <h3>📥 هاوردەکردنی بە کۆمەڵ</h3>
+            <p style="font-size: 13px; color: var(--muted)">دەق بلکێنە (جیاکەرەوە: | یان , یان Tab)، یاخود فایلی CSV/Excel هەڵبژێرە.</p>
+            <div class="setting-row" style="margin-bottom:10px;">
+                <label class="title" style="font-size:13px;">کارتی نوێ بۆ کام دەستە؟</label>
+                <select id="target-deck-select" style="width:100%; margin:0;"></select>
+            </div>
+            <textarea id="bulk-input" rows="8" placeholder="Apple | سێو&#10;Book | کتێب"></textarea>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:8px;">
+                <button class="primary" onclick="previewBulkText()">پیشاندانی پێشبینین</button>
+                <span style="color:var(--muted); font-size:13px;">یان</span>
+                <button class="ghost" onclick="document.getElementById('import-file-input').click()">📄 فایلی CSV / Excel</button>
+                <input type="file" id="import-file-input" hidden accept=".csv,.xlsx,.xls" onchange="handleImportFile(event)">
+            </div>
+
+            <div id="import-preview" class="import-preview" style="display:none;">
+                <div class="import-preview-header">
+                    <strong>پێشبینین (<span id="import-preview-count">0</span> کارت)</strong>
+                    <div>
+                        <button class="icon-btn" onclick="togglePreviewAll(true)">هەمووی</button>
+                        <button class="icon-btn" onclick="togglePreviewAll(false)">هیچکام</button>
+                    </div>
+                </div>
+                <div id="import-dupe-note" class="hint" style="margin-bottom:8px;"></div>
+                <div id="import-preview-body" class="import-preview-body"></div>
+                <div class="edit-form-actions" style="margin-top:12px;">
+                    <button class="primary" onclick="confirmImportPreview()">✅ دڵنیابوونەوە و زیادکردن</button>
+                    <button class="ghost" onclick="cancelImportPreview()">پاشگەزبوونەوە</button>
+                </div>
+            </div>
+        </div>
+        <div class="panel">
+            <h3>➕ یەک یەک زیاد بکە</h3>
+            <input id="single-en" placeholder="English" onkeydown="if(event.key==='Enter') addSingle()">
+            <input id="single-ku" placeholder="کوردی" onkeydown="if(event.key==='Enter') addSingle()">
+            <input id="single-mn" placeholder="تێبینی بیرخستنەوە" onkeydown="if(event.key==='Enter') addSingle()">
+            <button class="primary" onclick="addSingle()">پاشەکەوتکردن</button>
+        </div>
+    </section>
+
+    <section id="manage" class="view">
+        <div class="panel">
+            <input id="search-input" placeholder="بگەڕێ بۆ وشەیەک..." oninput="onManageSearchInput()">
+            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:10px 0;">
+                <select id="manage-sort" onchange="setManageSortBy(this.value)" style="width:auto; padding:8px 12px; margin:0;">
+                    <option value="newest">نوێترین</option>
+                    <option value="oldest">کۆنترین</option>
+                    <option value="due">وادەی پێداچوونەوە</option>
+                    <option value="forgotten">زۆرترین لەبیرکراو</option>
+                </select>
+                <select id="manage-deck-filter" onchange="managePage=0; renderManage();" style="width:auto; padding:8px 12px; margin:0;">
+                    <option value="">هەموو دەستەکان</option>
+                </select>
+                <button class="icon-btn" onclick="toggleManageSelectAll()">هەڵبژاردن/لابردنی هەمووی</button>
+                <button class="icon-btn danger" onclick="deleteSelectedCards()">🗑 سڕینەوە (<span id="manage-selected-count">0</span>)</button>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px;">
+                <select id="bulk-move-select" style="width:auto; padding:8px 12px; margin:0;"></select>
+                <button class="icon-btn" onclick="bulkMoveSelected()">📦 گواستنەوەی هەڵبژێردراوەکان بۆ ئەم دەستەیە</button>
+            </div>
+            <div id="manage-list" style="margin-top: 10px;"></div>
+            <div id="manage-pagination" style="display:flex; justify-content:center; gap:10px; margin-top:15px;"></div>
+        </div>
+    </section>
+
+    <section id="settings" class="view">
+        <div class="panel">
+            <h3>⚙️ ڕێکخستنەکان</h3>
+
+            <div class="setting-row">
+                <label class="title">ئامانجی ڕۆژانە</label>
+                <div class="radio-group" id="goal-group">
+                    <div class="radio-pill" data-val="10" onclick="setDailyGoal(10)">١٠ خولەک</div>
+                    <div class="radio-pill" data-val="20" onclick="setDailyGoal(20)">٢٠ خولەک</div>
+                    <div class="radio-pill" data-val="30" onclick="setDailyGoal(30)">٣٠ خولەک</div>
+                    <div class="radio-pill" data-val="45" onclick="setDailyGoal(45)">٤٥ خولەک</div>
+                </div>
+                <div class="hint">ئامانجێکی ڕاستەقینە هەڵبژێرە — ئەرکی ڕۆژانەی خوێندن بەپێی ئەمە دادەنرێت.</div>
+            </div>
+
+            <div class="setting-row">
+                <label class="title">ئاراستەی خوێندن</label>
+                <div class="radio-group" id="dir-group">
+                    <div class="radio-pill" data-val="en" onclick="setDir('en')">English → کوردی</div>
+                    <div class="radio-pill" data-val="ku" onclick="setDir('ku')">کوردی → English</div>
+                </div>
+                <div class="hint">دیاریکردنی ئەوەی سەرەتا کام وشە پیشان بدرێت لە کاتی خوێندندا.</div>
+            </div>
+
+            <div class="setting-row">
+                <label class="title">دەنگی ئینگلیزی</label>
+                <div class="radio-group" id="voice-group">
+                    <div class="radio-pill" data-val="en-US" onclick="setVoice('en-US')">🇺🇸 US</div>
+                    <div class="radio-pill" data-val="en-GB" onclick="setVoice('en-GB')">🇬🇧 UK</div>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <label class="title">خێرایی دەنگ (TTS)</label>
+                <div class="radio-group" id="rate-group">
+                    <div class="radio-pill" data-val="0.75" onclick="setRate('0.75')">0.75x</div>
+                    <div class="radio-pill" data-val="1" onclick="setRate('1')">1x</div>
+                    <div class="radio-pill" data-val="1.25" onclick="setRate('1.25')">1.25x</div>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <label class="title">دەنگی خۆکار لە کاتی خوێندن</label>
+                <div class="radio-group">
+                    <div class="radio-pill" id="autoplay-toggle" onclick="toggleAutoPlay()">🔊 لێدانی خۆکار</div>
+                    <div class="radio-pill" id="autorepeat-toggle" onclick="toggleAutoRepeat()">🔁 دووبارەی خۆکار (٣ جار)</div>
+                </div>
+                <div class="hint">کاتێک ڕووی ئینگلیزی دەردەکەوێت، دەنگەکەی خۆکارانە دەخوێنرێتەوە.</div>
+            </div>
+
+            <div class="setting-row">
+                <label class="title">دەنگی وردتر (ئەگەر بەردەستە)</label>
+                <select id="voice-name-select" onchange="setVoiceName(this.value)" style="width:100%; margin:0;">
+                    <option value="">-- خۆکارانە باشترین هەڵبژاردن --</option>
+                </select>
+                <div class="hint">لیستی دەنگەکان لەسەر ئامێر/وێبگەڕەکەت خۆیەتی. لە Chrome زۆرجار دەنگی "Google" لە هەموو باشترە.</div>
+            </div>
+
+            <hr class="sep">
+
+            <button class="ghost" onclick="exportData()">📥 هەناردەکردنی داتا (Backup)</button>
+            <button class="ghost" style="margin-right: 10px;" onclick="triggerImport()">📤 هاوردەکردنی داتا</button>
+            <input type="file" id="file-input" hidden accept="application/json" onchange="handleFile(event)">
+            <br><br>
+            <button class="btn-again" style="width: 100%; border-radius: 10px;" onclick="wipeData()">⚠️ سڕینەوەی هەموو داتاکان</button>
+        </div>
+    </section>
+</div>
+
+<div id="toast-wrap" class="toast-wrap"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+/*
+  گۆڕانکارییەکان:
+  - پاشەکەوتکردن بۆ window.storage (نەک localStorage) بۆ ئەوەی داتاکان بە دروستی پاشەکەوت ببن.
+  - قۆناغی ١: ئینجنی SRS ی وردتر (SM-2 style: easeFactor/interval/status) + سیستەمی
+    XP، پلە (٨ ئاست)، streak ی ڕۆژانە، و داشبۆردی خوێندن. (بڕوانە وەڵامی چات بۆ وردەکاری
+    قۆناغەکانی داهاتوو: هیتمەپ، ئەرکی ڕۆژانە، پۆمۆدۆرۆ، هاوردەکردنی CSV/Excel، ڕیدیزاینی تەواو).
+*/
+
+const STORAGE_KEY = 'e21-flashcard-state';
+const STREAK_MIN_REVIEWS = 10; // کەمترین ژمارەی پێداچوونەوە بۆ ژمێردنی ڕۆژی streak
+
+const XP_TABLE = { 1: 1, 2: 3, 3: 5, 4: 8 };
+// BALANCE FIX: پێشتر بەکارهێنەرێک بە ٤٠ خولەک لە یەک ڕۆژدا دەگەشتە "زیو" — ئەمە مانای
+// سیستەمی پاداشتی درێژخایەنی لەناودەبرد. ئێستا هەر ئاستێک ڕۆژان/هەفتەکانی بەردەوامی
+// ڕاستەقینە دەوێت، نەک یەک دانیشتن.
+const LEVELS = [
+    { name: 'تازەکار',    key: 'Beginner',  xp: 0,     emoji: '🌱' },
+    { name: 'بڕۆنز',      key: 'Bronze',    xp: 500,   emoji: '🥉' },
+    { name: 'زیو',        key: 'Silver',    xp: 1500,  emoji: '🥈' },
+    { name: 'زێڕ',        key: 'Gold',      xp: 4000,  emoji: '🥇' },
+    { name: 'پلاتینیۆم',  key: 'Platinum',  xp: 9000,  emoji: '💠' },
+    { name: 'ئەڵماس',     key: 'Diamond',   xp: 18000, emoji: '💎' },
+    { name: 'مامۆستا',    key: 'Master',    xp: 35000, emoji: '🏆' },
+    { name: 'ئەفسانە',    key: 'Legend',    xp: 65000, emoji: '👑' }
+];
+
+// MOTIVATION ENGINE: کۆمەڵێک وتەی هاندەری دڵنیا (ئینگلیزی + کوردی). بە قەستی لە جیاتی
+// ٢٠٠ دانە، ٤٠ دانەی وردی دروستکراوە کە دڵنیام لە ڕاستی سەرچاوەکەیان — زۆربەی "وتە بەناوبانگەکانی"
+// ئینتەرنێت هەڵەن یان دروستکراون، بۆیە کوالیتیم لەسەر بڕ هەڵبژارد. زۆر ئاسانە زیادکردنی زیاتر دواتر.
+const MOTIVATION_QUOTES = [
+    { en: "Imagination is more important than knowledge.", ku: "خەیاڵ لە زانیاری گرنگترە.", author: "Albert Einstein" },
+    { en: "Try not to become a person of success, but a person of value.", ku: "هەوڵ مەدە ببیتە کەسێکی سەرکەوتوو، بەڵکو ببە کەسێکی بەنرخ.", author: "Albert Einstein" },
+    { en: "Nothing in life is to be feared, it is only to be understood.", ku: "هیچ شتێک لە ژیاندا نییە بترسرێت، تەنها پێویستە تێبگەیتێ.", author: "Marie Curie" },
+    { en: "It always seems impossible until it's done.", ku: "هەمیشە وا دیارە مەحاڵە، هەتا ئەنجام دەدرێت.", author: "Nelson Mandela" },
+    { en: "Alone we can do so little; together we can do so much.", ku: "بە تەنیا کەمێک دەتوانین بکەین، بەیەکەوە زۆرمان لە دەست دێت.", author: "Helen Keller" },
+    { en: "It does not matter how slowly you go, as long as you do not stop.", ku: "گرنگ نییە بە چەند خاوی دەڕۆیت، تەنها ڕامەوەستە.", author: "Confucius" },
+    { en: "Genius is one percent inspiration and ninety-nine percent perspiration.", ku: "نەبوغ یەک لەسەد ئیلهامە و نەوەد و نۆ لەسەد ماندووبوونە.", author: "Thomas Edison" },
+    { en: "You may encounter many defeats, but you must not be defeated.", ku: "لەوانەیە زۆر جار شکست بهێنیت، بەڵام نابێت شکستخواردوو بیت.", author: "Maya Angelou" },
+    { en: "Success is not final, failure is not fatal.", ku: "سەرکەوتن کۆتایی نییە، شکستیش مردن نییە.", author: "Winston Churchill" },
+    { en: "Learn as if you were to live forever.", ku: "فێربە وەک ئەوەی هەتاهەتایە بژیت.", author: "Mahatma Gandhi" },
+    { en: "One child, one teacher, one book, one pen can change the world.", ku: "یەک منداڵ، یەک مامۆستا، یەک کتێب، یەک پێن دەتوانن جیهان بگۆڕن.", author: "Malala Yousafzai" },
+    { en: "The way to get started is to quit talking and begin doing.", ku: "ڕێگای دەستپێکردن، وازهێنانە لە قسەکردن و دەستکردنە بە کارکردن.", author: "Walt Disney" },
+    { en: "The only way to do great work is to love what you do.", ku: "تاکە ڕێگا بۆ کارێکی گەورە، خۆشویستنی ئەو کارەیە کە دەیکەیت.", author: "Steve Jobs" },
+    { en: "We are what we repeatedly do.", ku: "ئێمە ئەوەین کە بەردەوام دەیکەین.", author: "Aristotle" },
+    { en: "An investment in knowledge pays the best interest.", ku: "وەبەرهێنان لە زانیاریدا، باشترین قازانج دەدات.", author: "Benjamin Franklin" },
+    { en: "Whether you think you can, or you think you can't, you're right.", ku: "ئەگەر بیربکەیتەوە دەتوانیت یان نایتوانیت، هەردووکیان ڕاستن.", author: "Henry Ford" },
+    { en: "Float like a butterfly, sting like a bee.", ku: "وەک پەپولە بفڕە، وەک هەنگ بدە.", author: "Muhammad Ali" },
+    { en: "Learning never exhausts the mind.", ku: "فێربوون هەرگیز مێشک ماندوو ناکات.", author: "Leonardo da Vinci" },
+    { en: "The only true wisdom is in knowing you know nothing.", ku: "تاکە دانایی ڕاستەقینە، زانینی ئەوەیە کە هیچ نازانیت.", author: "Socrates" },
+    { en: "The only person you are destined to become is the person you decide to be.", ku: "تاکە کەسێک کە پێویستە ببیتێ، ئەو کەسەیە کە دەیبڕیت ببیتێ.", author: "Ralph Waldo Emerson" },
+    { en: "You are never too old to set another goal or to dream a new dream.", ku: "هەرگیز زۆر تەمەن ناکەیت بۆ دانانی ئامانجێکی نوێ یان خەونێکی نوێ.", author: "C.S. Lewis" },
+    { en: "The secret of getting ahead is getting started.", ku: "نهێنی پێشکەوتن، دەستپێکردنە.", author: "Mark Twain" },
+    { en: "We can do no great things, only small things with great love.", ku: "ناتوانین کاری گەورە بکەین، تەنها کاری بچووک بە خۆشەویستییەکی گەورەوە.", author: "Mother Teresa" },
+    { en: "If I have seen further, it is by standing on the shoulders of giants.", ku: "ئەگەر دوورتر بینیبم، لەبەر ئەوەیە لەسەر شانی گەورەکان وەستاوم.", author: "Isaac Newton" },
+    { en: "The most difficult thing is the decision to act, the rest is merely tenacity.", ku: "سەختترین شت بڕیاری کردارە، ئەوی تر تەنها خۆگرتنە.", author: "Amelia Earhart" },
+    { en: "Whatever you are, be a good one.", ku: "هەرچی دەبیت، بە باشی بگرەبەر.", author: "Abraham Lincoln" },
+    { en: "Education is the key to unlock the golden door of freedom.", ku: "خوێندن کلیلی کردنەوەی دەرگای زێڕینی ئازادییە.", author: "George Washington Carver" },
+    { en: "I attribute my success to this: I never gave or took any excuse.", ku: "سەرکەوتنم دەگەڕێنمەوە بۆ ئەمە: هەرگیز بیانوویەکم نەدا و وەرنەگرت.", author: "Florence Nightingale" },
+    { en: "You must never be fearful about what you are doing when it is right.", ku: "هەرگیز نەترسە لەوەی دەیکەیت کاتێک ڕاستە.", author: "Rosa Parks" },
+    { en: "Excellence is to do a common thing in an uncommon way.", ku: "باشی، ئەنجامدانی شتێکی ئاساییە بە شێوەیەکی نائاسایی.", author: "Booker T. Washington" },
+    { en: "Once you learn to read, you will be forever free.", ku: "کاتێک فێری خوێندنەوە بوویت، بۆ هەتاهەتایە ئازاد دەبیت.", author: "Frederick Douglass" },
+    { en: "Success is not the key to happiness. Happiness is the key to success.", ku: "سەرکەوتن کلیلی خۆشحاڵی نییە، خۆشحاڵی کلیلی سەرکەوتنە.", author: "Albert Schweitzer" },
+    { en: "You miss 100% of the shots you don't take.", ku: "هەموو ئەو تیرانەی نایانگریت لەدەستی دەدەیت.", author: "Wayne Gretzky" },
+    { en: "You don't have to be great to start, but you have to start to be great.", ku: "پێویست ناکات گەورە بیت بۆ دەستپێکردن، بەڵام پێویستە دەستبکەیت بۆ گەورەبوون.", author: "Zig Ziglar" },
+    { en: "I am still learning.", ku: "هێشتا فێردەبم.", author: "Michelangelo" },
+    { en: "Real knowledge is to know the extent of one's ignorance.", ku: "زانیاری ڕاستەقینە، زانینی ڕادەی نەزانینتە.", author: "Confucius" },
+    { en: "The beginning is the most important part of the work.", ku: "دەستپێک گرنگترین بەشی کارەکەیە.", author: "Plato" },
+    { en: "Luck is what happens when preparation meets opportunity.", ku: "بەخت ئەوەیە کاتێک ئامادەکاری بگاتە هەلێک.", author: "Seneca" },
+    { en: "Whatever the mind can conceive and believe, it can achieve.", ku: "هەرشتێک مێشک بتوانێت بیهێنێتەوە بیر و باوەڕی پێبهێنێت، دەتوانێت بیگاتێ.", author: "Napoleon Hill" },
+    { en: "The wound is the place where the light enters you.", ku: "برین ئەو شوێنەیە کە ڕووناکی پێیدا دێتە ژوورەوە.", author: "Rumi" }
+];
+
+let state = {
+    cards: [],
+    decks: [{ id: 'default', name: 'دەستەی سەرەکی', created: Date.now() }],
+    settings: { voice: 'en-US', dir: 'en', rate: 1, autoPlay: false, autoRepeat: false },
+    session: { queue: [], currentIndex: 0, deckId: null, cardsSinceQuote: 0 },
+    progress: { xp: 0, streak: 0, bestStreak: 0, lastStudyDate: null, daily: {}, totalPomodoros: 0 }
+};
+let editingId = null;
+let studyTimerInterval = null;
+
+// دواتر بۆ کارتی کۆنی پاشەکەوتکراو کە ڕێکخستنە نوێکانی TTS v2 ی تێدا نییە
+function normalizeSettings() {
+    const s = state.settings;
+    if (s.rate === undefined) s.rate = 1;
+    if (s.autoPlay === undefined) s.autoPlay = false;
+    if (s.autoRepeat === undefined) s.autoRepeat = false;
+    if (s.dailyGoalMin === undefined) s.dailyGoalMin = 25; // FEATURE (Phase 19)
+}
+
+// FEATURE (Deck System V2): ئەگەر هیچ دەستەیەک نەبوو، دەستەی سەرەکی دروست دەکات و هەموو
+// کارتی بەبێ دەستە (یان دەستەیەکی نەماوە) دەخاتە ناوی — هیچ کارتێک لەدەست نادرێت
+function ensureDecks() {
+    if (!state.decks || state.decks.length === 0) {
+        state.decks = [{ id: 'default', name: 'دەستەی سەرەکی', created: Date.now() }];
+    }
+    const validIds = new Set(state.decks.map(d => d.id));
+    state.cards.forEach(c => { if (!c.deckId || !validIds.has(c.deckId)) c.deckId = state.decks[0].id; });
+}
+
+/* ---------------- toast ---------------- */
+function toast(msg) {
+    const wrap = document.getElementById('toast-wrap');
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.innerText = msg;
+    wrap.appendChild(el);
+    setTimeout(() => el.remove(), 2600);
+}
+
+/* ---------------- persistence ---------------- */
+// BUG (Critical, Phase 2): پێشتر save()/load() ڕاستەوخۆ window.storage بانگ دەکرد بەبێ
+// پشکنینی بوونی. ئەگەر ئەم ئەپە لە دەرەوەی Claude.ai بکرێتەوە (فایلێکی ئاسایی HTML)،
+// window.storage بوونی نییە، بۆیە هەر save() ـێک دەکەوتە try/catch و تۆستێکی هەڵەی
+// دەردەکرد — بەردەوام، هەر جارە زیادکردنی کارت یان هەڵسەنگاندنێک. داتاش هەرگیز پاشەکەوت نەدەبوو.
+// چارەسەر: Storage abstraction کە window.storage بەکاردێنێت ئەگەر بەردەست بێت، ئەگەرنا
+// بە ئاسانی دەگەڕێتەوە بۆ localStorage — بەبێ کراش و بەبێ سپامی تۆست.
+const Storage = {
+    hasCloud: !!(typeof window !== 'undefined' && window.storage && typeof window.storage.get === 'function' && typeof window.storage.set === 'function'),
+    async get(key) {
+        if (this.hasCloud) {
+            try {
+                return await window.storage.get(key, false);
+            } catch (err) {
+                // ئاسایی و چاوەڕوانکراوە: window.storage.get() هەڵە دەدات ئەگەر کلیلەکە
+                // هێشتا بوونی نەبێت (یەکەم جاری بەکارهێنانی ئەپەکە) — ئەمە بەڵگە نییە کە
+                // window.storage تێکچووە، بۆیە نابێت hasCloud ـی خاوبکات یان بچێتە localStorage
+                // (کە لە ژینگەی Claude.ai artifact پشتگیری نەکراوە و وای لێکرد بارکردن بوەستێت).
+                console.log('window.storage: key not found yet (normal for first use) —', key);
+                return null;
+            }
+        }
+        try {
+            const raw = localStorage.getItem(key);
+            return raw ? { key, value: raw } : null;
+        } catch (err) {
+            console.error('localStorage unavailable:', err);
+            return null;
+        }
+    },
+    async set(key, value) {
+        if (this.hasCloud) {
+            try {
+                const result = await window.storage.set(key, value, false);
+                return result || null;
+            } catch (err) {
+                console.error('window.storage.set failed:', err);
+                return null; // لێرە localStorage تاقی ناکەینەوە — لە Claude.ai پشتگیری نەکراوە
+            }
+        }
+        try { localStorage.setItem(key, value); return { key, value }; }
+        catch (err) { console.error('localStorage set failed (maybe full or disabled):', err); return null; }
+    }
+};
+
+let saveInFlight = false;
+let savePending = false;
+async function save() {
+    savePending = true;
+    if (saveInFlight) return; // پاشەکەوتکردنێک ئێستا لە کارە، ئەمە لەگەڵ خۆیدا دەیبات کاتێک تەواو بوو
+    saveInFlight = true;
+    while (savePending) {
+        savePending = false;
+        const result = await Storage.set(STORAGE_KEY, JSON.stringify(state));
+        if (!result) toast('⚠️ نەتوانرا داتا پاشەکەوت بکرێت — بیرگەی وێبگەڕەکەت پڕە یان ناچالاکە');
+    }
+    saveInFlight = false;
+}
+
+async function load() {
+    try {
+        const result = await Storage.get(STORAGE_KEY);
+        if (result && result.value) {
+            let parsed;
+            try {
+                parsed = JSON.parse(result.value);
+            } catch (parseErr) {
+                // BUG (Critical, Phase 2/27): داتای تێکچوو (corrupted JSON) پێشتر کراشی دەکرد.
+                console.error('Corrupted saved data, starting fresh (raw data preserved in console):', parseErr, result.value);
+                toast('⚠️ داتای پاشەکەوتکراو تێکچووبوو — بە دەستەیەکی نوێ دەستپێدەکەین');
+                parsed = null;
+            }
+            if (parsed && Array.isArray(parsed.cards)) {
+                state = parsed;
+                if (!state.settings) state.settings = { voice: 'en-US', dir: 'en', rate: 1, autoPlay: false, autoRepeat: false };
+                if (!state.session) state.session = { queue: [], currentIndex: 0, deckId: null, cardsSinceQuote: 0 };
+                if (!state.progress) state.progress = { xp: 0, streak: 0, bestStreak: 0, lastStudyDate: null, daily: {}, totalPomodoros: 0 };
+                normalizeSettings();
+                // MIGRATION: کارتە کۆنەکان (بەپێی level) دەگۆڕدرێن بۆ فۆرماتی SRS v2، بەبێ لەدەستدانی هیچ داتایەک
+                state.cards = state.cards.map(migrateCard).map(sanitizeCard);
+            }
+        }
+    } catch (err) {
+        // BUG-GUARD (Critical): هەر هەڵەیەکی چاوەڕواننەکراو لێرە دەگیرێت — نابێت هەرگیز
+        // بارکردن بۆ هەمیشە بمێنێتەوە تەنها لەبەر هەڵەیەکی نەگیراو لە load()دا.
+        console.error('Unexpected error during load(), continuing with default state:', err);
+    } finally {
+        // BUG FIX (Critical): ئەمە پێشتر دواتر لە کۆدەکەدا بوو، بۆیە ئەگەر هەر هەنگاوێکی
+        // پێشووتر بوەستایە (وەک هەوڵدانی localStorage لە Claude.ai کە پشتگیری ناکرێت)، لۆدەرەکە
+        // بۆ هەمیشە دەمایەوە بارکردن — سکرینشۆتەکەت ڕاستەوخۆ ئەم کێشەیەی نیشاندا.
+        // finally مسۆگەری دەکات ئەمە هەمیشە کاردەکات، هەر شتێک لەسەرەوە ڕووبدات.
+        ensureDecks(); // FEATURE (Deck System V2) — دڵنیابوونەوە کە هەمیشە دەستەیەک هەیە
+        const loaderEl = document.getElementById('loader');
+        if (loaderEl) loaderEl.classList.add('hidden');
+    }
+    renderHome();
+    syncSettingsUI();
+    renderDeckManagerUI();
+}
+
+/* ---------------- navigation ---------------- */
+function showV(id) {
+    // FIX: پێشتر ئەگەر بەبێ دەستپێکردنی دەستەیەک بچووایتە لاپەڕەی "خوێندن"
+    // بەرنامەکە کرešاش دەکرد، چونکە هیچ کارتێک لە queue دا نەبوو.
+    if (id === 'study' && (!state.session.queue || state.session.queue.length === 0)) {
+        toast('تکایە سەرەتا دەستەیەک هەڵبژێرە');
+        id = 'home';
+    }
+
+    const leavingStudy = document.getElementById('study').classList.contains('active') && id !== 'study';
+    if (leavingStudy) { stopStudyTimer(); stopAutoRepeat(); }
+    document.body.classList.toggle('focus-active', id === 'study'); // FEATURE (V2 spec): دۆخی تیشکخستنە لە کاتی خوێندندا
+
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.nav').forEach(n => n.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    // FIX: پێشتر ئەم دووگمەیە دیاری نەدەکرا دوای گۆڕینی لاپەڕە (چالاک نەدەبوو بە ڕوونی).
+    const navBtn = document.querySelector(`.nav[data-view="${id}"]`);
+    if (navBtn) navBtn.classList.add('active');
+
+    if (id === 'home') renderHome();
+    if (id === 'manage') renderManage();
+    if (id === 'pomodoro') renderPomodoro();
+    if (id === 'archive') renderArchive();
+    if (id === 'add' || id === 'manage') renderDeckManagerUI();
+}
+
+/* ---------------- cards / SRS v2 data model ---------------- */
+// کارتێکی نوێ بەپێی مۆدێلی SRS v2:
+// easeFactor/interval بۆ خشتەبەندی SM-2 style، status بۆ قۆناغی فێربوون،
+// reviewCount/failCount بۆ شیکردنەوە و رێکخستنی queue ی زیرەک.
+function addCard(en, ku, mn = '', doSave = true, deckId = null) {
+    const now = Date.now();
+    const card = {
+        id: Date.now() + Math.random(),
+        en: en.trim(), ku: ku.trim(), mn: (mn || '').trim(),
+        deckId: deckId || null,
+        created: now,
+        easeFactor: 2.5,
+        interval: 0,
+        difficulty: 0,
+        stability: 0,
+        reviewCount: 0,
+        failCount: 0,
+        lastReviewDate: null,
+        due: now,
+        status: 'learning' // learning → reviewing → mature → mastered
+    };
+    state.cards.push(card);
+    if (doSave) save();
+    return card;
+}
+
+// BUG (High, Phase 4/27): ئەگەر داتای هاوردەکراو (JSON) خاوی تێکچووی ژمارەیی هەبێت
+// (بۆ نموونە easeFactor بووبێت بە نووسین، یان Infinity)، ئەوا هەموو خشتەبەندییەکانی
+// داهاتووی ئەو کارتە بۆ هەتاهەتایە تێکدەچوون (NaN بڵاو دەبێتەوە). ئەم فەنکشنە
+// هەموو خانە ژمارەییەکان ڕاست دەکاتەوە ئەگەر نادروست بن.
+function sanitizeCard(c) {
+    const safeNum = (v, fallback, min) => {
+        const n = Number(v);
+        if (!Number.isFinite(n)) return fallback;
+        return (min !== undefined) ? Math.max(min, n) : n;
+    };
+    c.easeFactor = safeNum(c.easeFactor, 2.5, 1.3);
+    c.interval = safeNum(c.interval, 0, 0);
+    c.reviewCount = safeNum(c.reviewCount, 0, 0);
+    c.failCount = safeNum(c.failCount, 0, 0);
+    c.difficulty = safeNum(c.difficulty, 0, 0);
+    c.stability = safeNum(c.stability, 0, 0);
+    c.due = Number.isFinite(Number(c.due)) ? Number(c.due) : Date.now();
+    if (!['learning', 'reviewing', 'mature', 'mastered'].includes(c.status)) c.status = 'learning';
+    if (typeof c.en !== 'string') c.en = String(c.en || '');
+    if (typeof c.ku !== 'string') c.ku = String(c.ku || '');
+    return c;
+}
+
+// کارتی وەشانی کۆن (کە تەنها 'level' ی هەبوو) دەگۆڕێت بۆ فۆرماتی v2، بەبێ لەدەستدانی مێژووی خوێندن
+function migrateCard(c) {
+    if (c.easeFactor !== undefined) return c; // پێشتر v2 بووە
+    const lvl = c.level || 0;
+    return Object.assign({}, c, {
+        deckId: c.deckId || null,
+        easeFactor: 2.5,
+        interval: lvl,
+        difficulty: 0,
+        stability: lvl,
+        reviewCount: lvl,
+        failCount: 0,
+        lastReviewDate: null,
+        status: lvl >= 5 ? 'mature' : lvl > 0 ? 'reviewing' : 'learning'
+    });
+}
+
+/* ---------------- Deck System V2 (ناوی دەستەی دڵخواز) ---------------- */
+function createDeck(name) {
+    const trimmed = (name || '').trim();
+    if (!trimmed) { toast('تکایە ناوی دەستە بنووسە'); return null; }
+    const deck = { id: 'deck_' + Date.now() + '_' + Math.floor(Math.random() * 1000), name: trimmed, created: Date.now() };
+    state.decks.push(deck);
+    save();
+    return deck;
+}
+
+function renameDeck(id, newName) {
+    const trimmed = (newName || '').trim();
+    if (!trimmed) return;
+    const deck = state.decks.find(d => d.id === id);
+    if (deck) { deck.name = trimmed; save(); }
+}
+
+function deleteDeck(id) {
+    if (state.decks.length <= 1) { toast('پێویستە لانیکەم یەک دەستە بمێنێتەوە'); return; }
+    if (!confirm('کارتەکانی ئەم دەستەیە دەگوازرێنەوە بۆ دەستەی سەرەکی. دڵنیایت؟')) return;
+    const fallback = state.decks.find(d => d.id !== id) || state.decks[0];
+    state.cards.forEach(c => { if (c.deckId === id) c.deckId = fallback.id; });
+    state.decks = state.decks.filter(d => d.id !== id);
+    save();
+    renderHome();
+    renderDeckManagerUI();
+}
+
+function handleCreateDeck() {
+    const input = document.getElementById('new-deck-name');
+    const deck = createDeck(input.value);
+    if (deck) { input.value = ''; renderDeckManagerUI(); toast('✅ دەستەی نوێ دروستکرا: ' + deck.name); }
+}
+
+function handleRenameDeck(id) {
+    const deck = state.decks.find(d => d.id === id);
+    const name = prompt('ناوی نوێی دەستە:', deck ? deck.name : '');
+    if (name !== null) { renameDeck(id, name); renderDeckManagerUI(); renderHome(); }
+}
+
+// هەموو ئەو select/list ـانەی پەیوەستن بە دەستەکانەوە نوێ دەکاتەوە (لە add، manage)
+function renderDeckManagerUI() {
+    if (!state.decks) return;
+    const managerList = document.getElementById('deck-manager-list');
+    if (managerList) {
+        managerList.innerHTML = state.decks.map(d => {
+            const count = state.cards.filter(c => c.deckId === d.id).length;
+            return `<div class="manage-item">
+                <div style="color:white">🗂 ${escapeHtml(d.name)} <span style="color:var(--muted); font-size:12px;">(${count} کارت)</span></div>
+                <div class="manage-actions">
+                    <button class="icon-btn" onclick="handleRenameDeck('${d.id}')">دەستکاری ناو</button>
+                    ${state.decks.length > 1 ? `<button class="icon-btn danger" onclick="deleteDeck('${d.id}')">سڕینەوە</button>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+    }
+    const targetSel = document.getElementById('target-deck-select');
+    if (targetSel) {
+        const current = targetSel.value;
+        targetSel.innerHTML = state.decks.map(d => `<option value="${d.id}">${escapeHtml(d.name)}</option>`).join('');
+        if (current && state.decks.find(d => d.id === current)) targetSel.value = current;
+    }
+    const filterSel = document.getElementById('manage-deck-filter');
+    if (filterSel) {
+        const current = filterSel.value;
+        filterSel.innerHTML = '<option value="">هەموو دەستەکان</option>' + state.decks.map(d => `<option value="${d.id}">${escapeHtml(d.name)}</option>`).join('');
+        filterSel.value = current;
+    }
+    const moveSel = document.getElementById('bulk-move-select');
+    if (moveSel) moveSel.innerHTML = state.decks.map(d => `<option value="${d.id}">${escapeHtml(d.name)}</option>`).join('');
+}
+
+function getTargetDeckId() {
+    const sel = document.getElementById('target-deck-select');
+    return (sel && sel.value) || (state.decks[0] && state.decks[0].id);
+}
+
+/* ---------------- import v2 (پێشبینین + CSV/Excel/pipe/comma/tab) ---------------- */
+let pendingImportRows = [];
+
+// جیاکەرەوەکە خۆکارانە دەدۆزێتەوە: | یاخود Tab یاخود ,
+function detectDelimiter(text) {
+    const sample = text.split('\n').filter(l => l.trim()).slice(0, 5).join('\n');
+    if ((sample.match(/\|/g) || []).length > 0) return '|';
+    if ((sample.match(/\t/g) || []).length > 0) return '\t';
+    if ((sample.match(/,/g) || []).length > 0) return ',';
+    return '|';
+}
+
+function parseDelimitedText(text) {
+    const delim = detectDelimiter(text);
+    const rows = [];
+    text.split('\n').forEach(line => {
+        const clean = line.replace(/\r$/, ''); // خەتی Windows پاک دەکاتەوە
+        if (!clean.trim()) return;
+        const parts = clean.split(delim).map(p => p.trim());
+        if (parts.length >= 2 && parts[0] && parts[1]) rows.push({ en: parts[0], ku: parts[1], mn: parts[2] || '' });
+    });
+    return rows;
+}
+
+function previewBulkText() {
+    const rows = parseDelimitedText(document.getElementById('bulk-input').value);
+    if (rows.length === 0) { toast('⚠️ هیچ ڕیزێکی دروست نەدۆزرایەوە'); return; }
+    showImportPreview(rows);
+}
+
+// هاوردەکردنی فایلی ڕاستەقینەی CSV/Excel بە بەکارهێنانی کتێبخانەی SheetJS
+function handleImportFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (typeof XLSX === 'undefined') {
+        toast('⚠️ کتێبخانەی هاوردەکردن هێشتا بارنەبووە، کەمێک چاوەڕێبە و دووبارە هەوڵبدەوە');
+        e.target.value = '';
+        return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        try {
+            const data = new Uint8Array(event.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const rows2d = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: false, defval: '' });
+            const rows = [];
+            rows2d.forEach(r => {
+                const en = (r[0] || '').toString().trim(), ku = (r[1] || '').toString().trim(), mn = (r[2] || '').toString().trim();
+                if (en && ku) rows.push({ en, ku, mn });
+            });
+            if (rows.length === 0) { toast('⚠️ هیچ ڕیزێکی دروست لە فایلەکەدا نەدۆزرایەوە'); return; }
+            showImportPreview(rows);
+        } catch (err) {
+            console.error(err);
+            toast('❌ نەتوانرا فایلەکە بخوێنرێتەوە. دڵنیابەوە فۆرماتەکەی CSV یان Excel ـە');
+        }
+    };
+    reader.onerror = () => toast('❌ هەڵە لە خوێندنەوەی فایل');
+    reader.readAsArrayBuffer(file);
+    e.target.value = '';
+}
+
+function showImportPreview(rows) {
+    pendingImportRows = rows;
+    // FEATURE (Phase 11): دۆزینەوەی دووبارەکان — لەگەڵ کارتی ئێستا و لەناو خۆی داوای هاوردەکراودا
+    const existingKeys = new Set(state.cards.map(c => c.en.trim().toLowerCase() + '|' + c.ku.trim().toLowerCase()));
+    const seenInBatch = new Set();
+    let dupeCount = 0;
+    const rowsWithFlags = rows.map(r => {
+        const key = r.en.trim().toLowerCase() + '|' + r.ku.trim().toLowerCase();
+        const isDupe = existingKeys.has(key) || seenInBatch.has(key);
+        seenInBatch.add(key);
+        if (isDupe) dupeCount++;
+        return Object.assign({}, r, { isDupe });
+    });
+    pendingImportRows = rowsWithFlags;
+
+    document.getElementById('import-preview-body').innerHTML = rowsWithFlags.map((r, i) => `
+        <div class="preview-row${r.isDupe ? ' preview-row-dupe' : ''}">
+            <input type="checkbox" id="prev-${i}" ${r.isDupe ? '' : 'checked'}>
+            <div class="preview-row-text">
+                <div class="preview-en">${escapeHtml(r.en)} ${r.isDupe ? '<span class="dupe-badge">دووبارە</span>' : ''}</div>
+                <div class="preview-ku">${escapeHtml(r.ku)}</div>
+            </div>
+        </div>`).join('');
+    document.getElementById('import-preview-count').innerText = rows.length;
+    const preview = document.getElementById('import-preview');
+    preview.style.display = 'block';
+    const noteEl = document.getElementById('import-dupe-note');
+    if (noteEl) noteEl.innerText = dupeCount > 0 ? `⚠️ ${dupeCount} دووبارە دۆزرایەوە و لە هەڵبژاردن لابران — ئەگەر دەتەوێت هەرچەندە زیادیان بکە، خانەکەیان چالاک بکەرەوە.` : '';
+    preview.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function togglePreviewAll(checked) {
+    document.querySelectorAll('#import-preview-body input[type=checkbox]').forEach(cb => cb.checked = checked);
+}
+
+function cancelImportPreview() {
+    pendingImportRows = [];
+    document.getElementById('import-preview').style.display = 'none';
+    document.getElementById('import-preview-body').innerHTML = '';
+}
+
+function confirmImportPreview() {
+    const deckId = getTargetDeckId();
+    let count = 0;
+    pendingImportRows.forEach((r, i) => {
+        const cb = document.getElementById(`prev-${i}`);
+        if (cb && cb.checked) { addCard(r.en, r.ku, r.mn, false, deckId); count++; }
+    });
+    if (count > 0) save();
+    toast(count > 0 ? `✅ ${count} کارت زیادکرا` : '⚠️ هیچ ڕیزێک هەڵنەبژێردرا');
+    cancelImportPreview();
+    document.getElementById('bulk-input').value = '';
+    renderHome();
+}
+
+function addSingle() {
+    const enInput = document.getElementById('single-en'), kuInput = document.getElementById('single-ku'), mnInput = document.getElementById('single-mn');
+    const en = enInput.value.trim(), ku = kuInput.value.trim(), mn = mnInput.value.trim();
+    if (en && ku) {
+        const isDupe = state.cards.some(c => c.en.trim().toLowerCase() === en.toLowerCase() && c.ku.trim().toLowerCase() === ku.toLowerCase());
+        addCard(en, ku, mn, true, getTargetDeckId());
+        toast(isDupe ? '⚠️ زیادکرا، بەڵام وەک دووبارە دیارە' : '✅ کارتەکە زیادکرا');
+        enInput.value = ''; kuInput.value = ''; mnInput.value = '';
+        enInput.focus();
+        renderHome();
+    } else {
+        toast('تکایە هەردوو خانەی English و کوردی پڕبکەرەوە');
+    }
+}
+
+/* ---------------- daily dashboard (home) ---------------- */
+function todayKey(offsetDays = 0) {
+    const d = new Date(Date.now() + offsetDays * 86400000);
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+function ensureDailyRecord() {
+    const key = todayKey();
+    if (!state.progress.daily[key]) state.progress.daily[key] = { reviews: 0, newCards: 0, studyMs: 0, pomodoros: 0 };
+    return state.progress.daily[key];
+}
+
+function getLevelInfo(xp) {
+    let current = LEVELS[0];
+    for (const lvl of LEVELS) { if (xp >= lvl.xp) current = lvl; }
+    const idx = LEVELS.indexOf(current);
+    const next = LEVELS[idx + 1] || null;
+    const progress = next ? Math.min(100, Math.round(((xp - current.xp) / (next.xp - current.xp)) * 100)) : 100;
+    return { current, next, progress };
+}
+
+/* ---------------- daily missions ---------------- */
+const DAILY_MISSIONS = [
+    { id: 'reviews20', label: () => '٢٠ پێداچوونەوە بکە', target: () => 20, xp: 20, metric: rec => rec.reviews },
+    { id: 'new10', label: () => '١٠ کارتی نوێ فێربە', target: () => 10, xp: 20, metric: rec => rec.newCards },
+    // FEATURE (Phase 19, Daily Goal): ئامانجی خوێندن دەگۆڕدرێت بەپێی ڕێکخستنی بەکارهێنەر
+    { id: 'studyGoal', label: () => `${state.settings.dailyGoalMin || 25} خولەک خوێندن بکە`, target: () => (state.settings.dailyGoalMin || 25) * 60 * 1000, xp: 20, metric: rec => rec.studyMs }
+];
+
+function checkDailyMissions() {
+    const rec = ensureDailyRecord();
+    if (!rec.missionsCompleted) rec.missionsCompleted = {};
+    DAILY_MISSIONS.forEach(m => {
+        if (!rec.missionsCompleted[m.id] && m.metric(rec) >= m.target()) {
+            rec.missionsCompleted[m.id] = true;
+            awardXp(m.xp);
+            toast(`🎯 ئەرکی ڕۆژانە تەواو بوو: ${m.label()} (+${m.xp} XP)`);
+        }
+    });
+}
+
+function renderMissions() {
+    const rec = ensureDailyRecord();
+    document.getElementById('missions-list').innerHTML = DAILY_MISSIONS.map(m => {
+        const done = rec.missionsCompleted && rec.missionsCompleted[m.id];
+        const target = m.target();
+        const val = Math.min(target, m.metric(rec));
+        const pct = target > 0 ? Math.round((val / target) * 100) : 0;
+        return `<div class="mission-row ${done ? 'done' : ''}">
+            <div class="mission-label">${done ? '✅' : '⬜'} ${m.label()} <span style="color:var(--muted); font-size:12px;">(+${m.xp} XP)</span></div>
+            <div class="progress-mini"><div class="progress-bar" style="width:${pct}%"></div></div>
+        </div>`;
+    }).join('');
+}
+
+/* ---------------- heatmap (٣٦٥ ڕۆژی ئەکتیڤیێتی) ---------------- */
+function renderHeatmap() {
+    const wrap = document.getElementById('heatmap-grid');
+    const today = new Date();
+    let html = '';
+    for (let i = 364; i >= 0; i--) {
+        const key = todayKey(-i);
+        const rec = state.progress.daily[key];
+        const count = rec ? rec.reviews : 0;
+        let level = 0;
+        if (count > 0) level = 1;
+        if (count >= 10) level = 2;
+        if (count >= 25) level = 3;
+        if (count >= 50) level = 4;
+        html += `<div class="heat-cell level-${level}" title="${key}: ${count} پێداچوونەوە"></div>`;
+    }
+    wrap.innerHTML = html;
+}
+
+function renderHome() {
+    const now = Date.now();
+    const rec = ensureDailyRecord();
+    checkDailyMissions();
+    const xp = state.progress.xp || 0;
+    const { current, next, progress } = getLevelInfo(xp);
+
+    // --- کارتی پلە ---
+    document.getElementById('level-badge').innerText = `${current.emoji} ${current.name}`;
+    document.getElementById('level-progress-fill').style.width = Math.max(4, progress) + '%';
+    document.getElementById('level-hint').innerText = next
+        ? `${xp} / ${next.xp} XP بۆ گەیشتن بە ${next.emoji} ${next.name}`
+        : `${xp} XP — بەرزترین ئاست بەدەستهێنا! 👑`;
+
+    renderHeatmap();
+    renderMissions();
+
+    // --- ستاتیستیکی داشبۆرد ---
+    document.getElementById('count-due').innerText = state.cards.filter(c => c.due <= now).length;
+    document.getElementById('count-reviews-today').innerText = rec.reviews;
+    document.getElementById('count-new-today').innerText = rec.newCards;
+    document.getElementById('count-streak').innerText = state.progress.streak || 0;
+    document.getElementById('count-xp').innerText = xp;
+    document.getElementById('count-mastered').innerText = state.cards.filter(c => c.status === 'mastered').length;
+    document.getElementById('count-difficult').innerText = state.cards.filter(c => (c.failCount || 0) >= 3).length;
+    const studyMin = Math.floor((rec.studyMs || 0) / 60000), studySec = Math.floor(((rec.studyMs || 0) % 60000) / 1000);
+    document.getElementById('count-studytime').innerText = `${studyMin}:${String(studySec).padStart(2, '0')}`;
+
+    // --- زنجیرەی دەستەکان ---
+    const deckList = document.getElementById('deck-list');
+    deckList.innerHTML = '';
+
+    if (state.cards.length === 0) {
+        deckList.innerHTML = `<div class="deck" style="text-align:center; color: var(--muted); grid-column: 1/-1;">هێشتا هیچ کارتێکت زیاد نەکردووە.<br><br><button class="btn-play" style="width:auto; padding: 10px 20px;" onclick="showV('add')">زیادکردنی یەکەم کارت</button></div>`;
+        return;
+    }
+
+    state.decks.forEach(deck => {
+        const deckCards = state.cards.filter(c => c.deckId === deck.id);
+        if (deckCards.length === 0) return; // دەستەی بەتاڵ لێرە نیشان نادرێت (بەڵام لە بەشی زیادکردندا دەردەکەوێت)
+        const deckMastered = deckCards.filter(c => c.status === 'mastered').length;
+        const pct = (deckMastered / deckCards.length) * 100;
+        const dueCount = deckCards.filter(c => c.due <= now).length;
+        const div = document.createElement('div');
+        div.className = 'deck';
+        div.innerHTML = `<h3>🗂 ${escapeHtml(deck.name)}</h3><p style="font-size: 13px; color: var(--muted)">${deckCards.length} کارت • ${dueCount} پێداچوونەوە${deckMastered ? ' • ' + deckMastered + ' فێربوو' : ''}</p><div class="progress-mini"><div class="progress-bar" style="width: ${pct}%"></div></div><button class="btn-play" onclick="startStudy('${deck.id}')">دەستپێکردن</button>`;
+        deckList.appendChild(div);
+    });
+}
+
+/* ---------------- study ---------------- */
+// FEATURE (Smart Queue): پێشینایەتی بەپێی دواکەوتوویی + هەڵە + سەختی، نەک تەنها وادەی خام
+function cardPriorityScore(c, now) {
+    const overdueDays = Math.max(0, (now - c.due) / 86400000);
+    const failWeight = (c.failCount || 0) * 3;
+    const difficultyWeight = (c.difficulty || 0) * 10;
+    return overdueDays + failWeight + difficultyWeight;
+}
+
+// FEATURE (Performance + UX): تەنانەت ئەگەر دەستەیەک هەزاران کارتی هەبێت، یاخوداستێک تەنها
+// باشترین ٤٠ کارتی (بەپێی Smart Queue پێشینایەتی) دەگرێتەوە — خێرا و مسۆگەر دەبێت
+const STUDY_SESSION_CAP = 40;
+// BUG FIX (High, Phase 5): پێشتر کارتی نوێ سنوورێکی نەبوو، بۆیە دەکرا کارتی نوێ هەموو
+// یاخوداستێک پڕبکاتەوە و پێداچوونەوە دواکەوتووەکان بخاتە پاش — ئێستا هەر یاخوداستێک
+// زۆرترین ١٠ کارتی نوێ لەخۆدەگرێت.
+const NEW_CARDS_PER_SESSION_CAP = 10;
+
+function startStudy(deckId) {
+    const now = Date.now();
+    const deckCards = state.cards.filter(c => c.deckId === deckId);
+    if (deckCards.length === 0) { toast('ئەم دەستەیە هیچ کارتێکی تێدا نییە'); return; }
+
+    // BUG FIX (Critical, Phase 7): پێشتر کارتی "mastered" بۆ هەمیشە لە خولی خوێندن دەردەچوو.
+    // بەڕاستی mastered واتای "هەرگیز پێداچوونەوەی نەکەیت" نییە، واتای "متمانەیەکی بەرز و
+    // ماوەیەکی درێژە" — بۆیە دەبێت کاتێک وادەی هات دووبارە بێتەوە، تەنها بە دەم-دەمی.
+    const dueReviews = deckCards.filter(c => (c.reviewCount || 0) > 0 && c.due <= now)
+        .sort((a, b) => cardPriorityScore(b, now) - cardPriorityScore(a, now));
+    const newCards = deckCards.filter(c => (c.reviewCount || 0) === 0).slice(0, NEW_CARDS_PER_SESSION_CAP);
+
+    let queue = dueReviews.concat(newCards).slice(0, STUDY_SESSION_CAP);
+    let studyingAhead = false;
+
+    if (queue.length === 0) {
+        // هیچ شتێک ئەمڕۆ چاوەڕوان نییە — لە جیاتی ئەوەی دوگمەکە هیچی نەکات، ڕێگە بدە
+        // بە خوێندنی پێشوەخت (ئارەزوومەندانە)، بەڵام بە ڕوونی پێی بڵێ
+        const aheadCards = deckCards.slice().sort((a, b) => a.due - b.due).slice(0, STUDY_SESSION_CAP);
+        if (aheadCards.length === 0) { toast('هیچ کارتێک نییە بۆ خوێندن'); return; }
+        queue = aheadCards;
+        studyingAhead = true;
+    }
+
+    state.session.queue = queue;
+    state.session.currentIndex = 0;
+    state.session.deckId = deckId;
+    state.session.cardsSinceQuote = 0; // FEATURE (Motivation Engine)
+    showV('study');
+    renderCard();
+    startStudyTimer();
+    if (studyingAhead) toast('🎉 هیچ کارتێک ئەمڕۆ چاوەڕوان نییە — خوێندنی پێشوەخت دەکەیت');
+}
+
+// BUG FIX (same class as the Pomodoro bug): پێشتر هەر tick ـێک بە تەواوی ١٠٠٠ms زیادی
+// دەکرد بەسەر کاتی خوێندندا — ئەگەر setInterval لە مۆبایلدا ڕابگیرێت (screen lock)، کاتی
+// خوێندن کەمتر لە ڕاستی تۆمار دەکرا. ئێستا لەسەر کاتژمێری ڕاستەقینە (Date.now()) حیساب دەکرێت.
+let studySessionStart = null;
+let studyMsBaseline = 0;
+let studyTimerDateKey = null;
+
+function updateStudyTime() {
+    if (studySessionStart == null) return;
+    if (todayKey() !== studyTimerDateKey) {
+        // ڕۆژ گۆڕا لە ناوەڕاستی خوێندندا (نزیکەی نیوەشەو) — بۆ ڕۆژی نوێ دەستپێبکەوە
+        studyTimerDateKey = todayKey();
+        studySessionStart = Date.now();
+        studyMsBaseline = 0;
+    }
+    const rec = ensureDailyRecord();
+    rec.studyMs = studyMsBaseline + (Date.now() - studySessionStart);
+}
+
+function startStudyTimer() {
+    if (studyTimerInterval) return;
+    const rec = ensureDailyRecord();
+    studySessionStart = Date.now();
+    studyMsBaseline = rec.studyMs || 0;
+    studyTimerDateKey = todayKey();
+    studyTimerInterval = setInterval(() => {
+        updateStudyTime();
+        checkDailyMissions();
+    }, 1000);
+}
+
+function stopStudyTimer() {
+    if (studyTimerInterval) {
+        updateStudyTime(); // دڵنیابوونەوە لە وەرگرتنی دوایین کاتی ڕاستەقینە پێش وەستان
+        clearInterval(studyTimerInterval);
+        studyTimerInterval = null;
+        studySessionStart = null;
+        save();
+    }
+}
+
+/* ---------------- Pomodoro Pro (25/5 × 3 + 25/30، خۆکارانە دەخولێتەوە) ---------------- */
+const POMO_FOCUS_SEC = 25 * 60;
+const POMO_BREAK_SEC = 5 * 60;
+const POMO_LONG_BREAK_SEC = 30 * 60;
+const POMO_XP = 50;
+
+// BUG FIX (Critical): پێشتر تایمەرەکە پشتی بە `secondsLeft--` هەر چرکەیەک لە setInterval ـەوە
+// دەبەست. لە مۆبایلدا کاتێک screen قفڵ دەکرێت یان تابەکە دەچێتە پشتەوە، وێبگەڕەکان
+// setInterval ـەکان ڕادەگرن یان زۆر کەمی دەکەنەوە — ئەمە دەبووە هۆکاری "پۆمۆدۆرۆ کار ناکات".
+// چارەسەر: کاتی کۆتایی وەک کاتژمێری ڕاستەقینەی سیستەم (Date.now()) هەڵدەگیرێت، بۆیە تەنانەت
+// ئەگەر setInterval بۆ چەند خولەک ڕابگیرێت، کاتێک دەگەڕێتەوە خۆی بە دروستی ڕاست دەکاتەوە.
+let pomodoro = { phase: 'idle', endTime: null, remainingOnPause: null, cycleIndex: 0, running: false, intervalId: null };
+
+function phaseDuration(phase) {
+    if (phase === 'focus') return POMO_FOCUS_SEC;
+    if (phase === 'break') return POMO_BREAK_SEC;
+    if (phase === 'longBreak') return POMO_LONG_BREAK_SEC;
+    return POMO_FOCUS_SEC;
+}
+
+function getSecondsLeft() {
+    if (pomodoro.phase === 'idle') return POMO_FOCUS_SEC;
+    if (!pomodoro.running) return pomodoro.remainingOnPause != null ? pomodoro.remainingOnPause : phaseDuration(pomodoro.phase);
+    return Math.max(0, Math.round((pomodoro.endTime - Date.now()) / 1000));
+}
+
+function playBeep() {
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator(), gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.frequency.value = 880;
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        osc.start(); osc.stop(ctx.currentTime + 0.5);
+    } catch (e) { /* Web Audio پشتگیری نەکرابێت، هیچ کێشەیەک نییە */ }
+}
+
+function pomoTick() {
+    if (getSecondsLeft() <= 0) pomoPhaseComplete();
+    else renderPomodoro();
+}
+
+function pomoStart() {
+    if (pomodoro.running) return;
+    if (pomodoro.phase === 'idle') pomodoro.phase = 'focus';
+    const secondsToRun = pomodoro.remainingOnPause != null ? pomodoro.remainingOnPause : phaseDuration(pomodoro.phase);
+    pomodoro.endTime = Date.now() + secondsToRun * 1000;
+    pomodoro.remainingOnPause = null;
+    pomodoro.running = true;
+    if (pomodoro.intervalId) clearInterval(pomodoro.intervalId); // BUG-GUARD: ڕێگری لە دووبارە دروستکردنی setInterval
+    pomodoro.intervalId = setInterval(pomoTick, 1000);
+    renderPomodoro();
+}
+
+function pomoPause() {
+    if (!pomodoro.running) return;
+    pomodoro.remainingOnPause = getSecondsLeft();
+    pomodoro.running = false;
+    clearInterval(pomodoro.intervalId);
+    pomodoro.intervalId = null;
+    renderPomodoro();
+}
+
+function pomoReset() {
+    clearInterval(pomodoro.intervalId);
+    pomodoro = { phase: 'idle', endTime: null, remainingOnPause: null, cycleIndex: 0, running: false, intervalId: null };
+    renderPomodoro();
+}
+
+function pomoSkip() {
+    if (pomodoro.phase === 'idle') return;
+    pomoPhaseComplete();
+}
+
+// Auto cycle: ٤ جار (٢٥ خوێندن + ٥ پشوو)، دوای جاری چوارەم پشووی درێژی ٣٠ خولەک
+function pomoPhaseComplete() {
+    playBeep();
+    if (pomodoro.phase === 'focus') {
+        awardXp(POMO_XP);
+        const rec = ensureDailyRecord();
+        rec.pomodoros = (rec.pomodoros || 0) + 1;
+        state.progress.totalPomodoros = (state.progress.totalPomodoros || 0) + 1;
+        save();
+        pomodoro.cycleIndex++;
+        if (pomodoro.cycleIndex >= 4) {
+            pomodoro.cycleIndex = 0;
+            pomodoro.phase = 'longBreak';
+            toast('🎉 ٤ پۆمۆدۆرۆت تەواو کرد! پشووی درێژ (٣٠ خولەک)');
+        } else {
+            pomodoro.phase = 'break';
+            toast(`✅ پۆمۆدۆرۆیەک تەواو بوو (+${POMO_XP} XP) — پشوو بدە`);
+        }
+    } else {
+        pomodoro.phase = 'focus';
+        toast('🍅 کاتی خوێندنە — وریابە!');
+    }
+    pomodoro.remainingOnPause = null;
+    pomodoro.endTime = Date.now() + phaseDuration(pomodoro.phase) * 1000; // Auto cycle: خۆی بەردەوام دەبێت
+    renderPomodoro();
+}
+
+// BUG FIX: کاتێک بەکارهێنەر دەگەڕێتەوە بۆ تابەکە (دوای screen lock یان گۆڕینی تاب)،
+// دەستبەجێ پشکنین دەکات ئایا قۆناغێک لە کاتی نەبوونیدا تەواو بووە، لە جیاتی چاوەڕوانکردنی tick داهاتوو
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && pomodoro.running) pomoTick();
+    if (!document.hidden && studyTimerInterval) updateStudyTime();
+});
+
+function renderPomodoro() {
+    const labels = { idle: 'ئامادەبە', focus: '🍅 کاتی خوێندن', break: '☕ پشووی کورت', longBreak: '🌙 پشووی درێژ' };
+    const secondsLeft = getSecondsLeft();
+    const m = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
+    const s = String(secondsLeft % 60).padStart(2, '0');
+
+    document.getElementById('pomo-time').innerText = `${m}:${s}`;
+    document.getElementById('pomo-phase-label').innerText = labels[pomodoro.phase];
+    document.getElementById('pomo-start-btn').style.display = pomodoro.running ? 'none' : 'inline-block';
+    document.getElementById('pomo-pause-btn').style.display = pomodoro.running ? 'inline-block' : 'none';
+
+    document.querySelectorAll('.pomo-dot').forEach((dot, i) => {
+        dot.classList.toggle('done', i < pomodoro.cycleIndex);
+        dot.classList.toggle('active', i === pomodoro.cycleIndex && pomodoro.phase === 'focus');
+    });
+
+    const rec = ensureDailyRecord();
+    document.getElementById('pomo-today-count').innerText = rec.pomodoros || 0;
+    document.getElementById('pomo-total-count').innerText = state.progress.totalPomodoros || 0;
+
+    const badge = document.getElementById('pomo-mini-badge');
+    if (pomodoro.phase !== 'idle') {
+        badge.style.display = 'flex';
+        badge.innerText = (pomodoro.running ? '🍅 ' : '⏸ ') + `${m}:${s}`;
+    } else {
+        badge.style.display = 'none';
+    }
+}
+
+// تێبینی یارمەتیدەر و دوگمەی گوێگرتن هەردووکیان تایبەتن بە وشەی ئینگلیزی،
+// بۆیە پێویستە هەمیشە لەگەڵ ڕووی ئینگلیزی بن، جا ئەو ڕووە پێشەوە بێت یان دواوە
+const ENGLISH_EXTRA_HTML = `
+    <div class="mn-box">
+        <strong style="display:block; color: var(--accent); margin-bottom: 5px;">🧠 یارمەتیدەر</strong>
+        <span id="a-mn">تێبینی بیرخستنەوە.</span>
+    </div>
+    <button class="ghost" style="margin-top: 16px; font-size: 13px;" onclick="speak(event)">🔊 گوێگرتن</button>
+`;
+
+function renderCard() {
+    const card = state.session.queue[state.session.currentIndex];
+    if (!card) { showV('home'); return; }
+    const total = state.session.queue.length, currentNum = state.session.currentIndex + 1;
+    const reversed = state.settings.dir === 'ku'; // ENHANCEMENT: ئاراستەی خوێندنی گۆڕاو
+
+    document.getElementById('study-deck-name').innerText = (state.decks.find(d => d.id === state.session.deckId) || {}).name || 'دەستە';
+    document.getElementById('study-progress-text').innerText = `${currentNum} / ${total}`;
+    document.getElementById('study-progress-bar').style.width = `${(currentNum / total) * 100}%`;
+
+    document.getElementById('q-lang').innerText = reversed ? 'کوردی' : 'ENGLISH';
+    document.getElementById('q-text').innerText = reversed ? card.ku : card.en;
+    document.getElementById('a-lang').innerText = reversed ? 'ENGLISH' : 'کوردی';
+    document.getElementById('a-text').innerText = reversed ? card.en : card.ku;
+
+    const frontExtra = document.getElementById('front-extra'), backExtra = document.getElementById('back-extra');
+    if (reversed) { frontExtra.innerHTML = ''; backExtra.innerHTML = ENGLISH_EXTRA_HTML; }
+    else { frontExtra.innerHTML = ENGLISH_EXTRA_HTML; backExtra.innerHTML = ''; }
+    document.getElementById('a-mn').innerText = card.mn || 'تێبینی نییە.';
+
+    document.getElementById('card-obj').classList.remove('flip');
+    if (isEnglishShowingNow()) maybeAutoPlayEnglish(); else stopAutoRepeat();
+}
+
+function flipCard() {
+    document.getElementById('card-obj').classList.toggle('flip');
+    if (isEnglishShowingNow()) maybeAutoPlayEnglish(); else stopAutoRepeat();
+}
+
+function showMotivationCard() {
+    stopAutoRepeat();
+    const q = MOTIVATION_QUOTES[Math.floor(Math.random() * MOTIVATION_QUOTES.length)];
+    document.getElementById('motivation-en').innerText = q.en;
+    document.getElementById('motivation-ku').innerText = q.ku;
+    document.getElementById('motivation-author').innerText = '— ' + q.author;
+    document.getElementById('card-obj').style.display = 'none';
+    document.querySelector('.controls').style.display = 'none';
+    document.querySelector('.kbd-hint').style.display = 'none';
+    document.getElementById('motivation-overlay').classList.add('active');
+}
+
+function dismissMotivationCard() {
+    document.getElementById('motivation-overlay').classList.remove('active');
+    document.getElementById('card-obj').style.display = '';
+    document.querySelector('.controls').style.display = '';
+    document.querySelector('.kbd-hint').style.display = '';
+    renderCard();
+}
+
+/* ---------------- SRS v2 scheduling engine (SM-2 style) ---------------- */
+// وەڵام: 1=دووبارە 2=سەخت 3=باش 4=ئاسان
+// ئەم فەنکشنە خشتەبەندی، failCount/reviewCount، و قۆناغی (status) کارتەکە نوێ دەکاتەوە.
+// دەگەڕێتەوە true ئەگەر پێویست بکات کارتەکە لەم خولەدا دووبارە بێتەوە (وەک "دووبارە").
+function scheduleCard(card, rating) {
+    const now = Date.now();
+    card.reviewCount = (card.reviewCount || 0) + 1;
+    card.lastReviewDate = now;
+    if (card.easeFactor == null) card.easeFactor = 2.5;
+    if (card.interval == null) card.interval = 0;
+
+    let requeue = false;
+
+    if (rating === 1) { // دووبارە
+        card.failCount = (card.failCount || 0) + 1;
+        card.easeFactor = Math.max(1.3, card.easeFactor - 0.2);
+        card.interval = 0;
+        card.status = 'learning';
+        card.due = now + 5 * 60 * 1000; // ٥ خولەک دواتر لەم خولەدا دووبارە دەبێتەوە
+        requeue = true;
+    } else if (rating === 2) { // سەخت
+        card.easeFactor = Math.max(1.3, card.easeFactor - 0.15);
+        card.interval = Math.max(1, Math.round((card.interval || 1) * 1.2));
+        card.due = now + card.interval * 24 * 60 * 60 * 1000;
+    } else if (rating === 3) { // باش
+        card.interval = card.interval === 0 ? 1 : Math.round(card.interval * card.easeFactor);
+        card.due = now + card.interval * 24 * 60 * 60 * 1000;
+    } else { // ئاسان
+        card.easeFactor = card.easeFactor + 0.15;
+        card.interval = card.interval === 0 ? 3 : Math.round(card.interval * card.easeFactor * 1.3);
+        card.due = now + card.interval * 24 * 60 * 60 * 1000;
+    }
+
+    if (rating > 1) {
+        if (card.interval >= 21 && card.failCount === 0 && card.reviewCount >= 6) {
+            if (card.status !== 'mastered') card.masteredDate = now; // بۆ ئارشیف
+            card.status = 'mastered';
+        }
+        else if (card.interval >= 21) card.status = 'mature';
+        else card.status = 'reviewing';
+    }
+
+    card.difficulty = card.reviewCount ? Math.min(1, card.failCount / card.reviewCount) : 0; // زانیاری، بۆ داهاتوو
+    card.stability = card.interval; // زانیاری، بۆ داهاتوو
+
+    // BUG-GUARD (Phase 4): ڕێگری لە interval/due ی نادروست (NaN/Infinity/نێگەتیڤ)
+    if (!Number.isFinite(card.interval) || card.interval < 0) card.interval = 1;
+    if (!Number.isFinite(card.easeFactor)) card.easeFactor = 2.5;
+    if (!Number.isFinite(card.due)) card.due = now + 24 * 60 * 60 * 1000;
+
+    return requeue;
+}
+
+function awardXp(amount) { state.progress.xp = (state.progress.xp || 0) + amount; }
+
+// BUG FIX (High, Phase 18): پێشتر هیچ سنوورێک نەبوو — بەکارهێنەر دەیتوانی "دووبارە" بۆ یەک
+// کارت بێ کۆتایی کلیک بکات و XP کۆبکاتەوە بەبێ فێربوونی ڕاستەقینە. ئێستا هەر کارتێک
+// ڕۆژانە زۆرترین ٥ جار XP دەداتەوە.
+const XP_PER_CARD_DAILY_CAP = 5;
+function awardXpForReview(card, rating) {
+    const rec = ensureDailyRecord();
+    if (!rec.cardXpCount) rec.cardXpCount = {};
+    const key = String(card.id);
+    const countSoFar = rec.cardXpCount[key] || 0;
+    if (countSoFar >= XP_PER_CARD_DAILY_CAP) return 0;
+    rec.cardXpCount[key] = countSoFar + 1;
+    const amount = XP_TABLE[rating];
+    awardXp(amount);
+    return amount;
+}
+
+function logStudyEvent(isNew) {
+    const rec = ensureDailyRecord();
+    rec.reviews++;
+    if (isNew) rec.newCards++;
+    updateStreak(rec);
+    return rec;
+}
+
+function updateStreak(rec) {
+    if (rec.reviews < STREAK_MIN_REVIEWS) return; // هێشتا کەمترین ژمارە نەگەیشتووە
+    const key = todayKey();
+    if (state.progress.lastStudyDate === key) return; // ئەمڕۆ پێشتر ژمێردراوە
+
+    const yKey = todayKey(-1);
+    state.progress.streak = (state.progress.lastStudyDate === yKey || state.progress.lastStudyDate === null)
+        ? (state.progress.streak || 0) + 1
+        : 1;
+    state.progress.lastStudyDate = key;
+    state.progress.bestStreak = Math.max(state.progress.bestStreak || 0, state.progress.streak);
+}
+
+function submitRate(rating) {
+    const card = state.session.queue[state.session.currentIndex];
+    if (!card) return;
+    // BUG FIX (Critical): پێشتر دەکرا هەڵسەنگاندن بدرێت بەبێ ئەوەی کارتەکە بگۆڕدرێت و
+    // وەڵامەکە ببینرێت — ئەمە خۆی دژی بنەمای Active Recall بوو، هەروەها ئەگەر بەخێرایی
+    // دوو جار کلیک بکرایە دەکرا کارتی داهاتوو بەبێ بینین هەڵسەنگێندرێت.
+    if (!document.getElementById('card-obj').classList.contains('flip')) {
+        toast('سەرەتا کلیک بکە بۆ بینینی وەڵام');
+        return;
+    }
+    const wasNew = (card.reviewCount || 0) === 0;
+
+    const requeue = scheduleCard(card, rating);
+    // FEATURE: کارتی "دووبارە" لە کۆتایی یاخوداستدا نایەتەوە، بەڵکو چەند کارتێک دواتر —
+    // بۆ پتەوکردنی بیرکردنەوەی ڕاستەوخۆ، لە جیاتی چاوەڕوانکردنی هەموو یاخوداستەکە
+    if (requeue) {
+        const REQUEUE_GAP = 5;
+        const insertAt = Math.min(state.session.queue.length, state.session.currentIndex + 1 + REQUEUE_GAP);
+        state.session.queue.splice(insertAt, 0, card);
+    }
+
+    awardXpForReview(card, rating);
+    logStudyEvent(wasNew);
+    checkDailyMissions();
+
+    state.session.currentIndex++;
+    save();
+    if (state.session.currentIndex >= state.session.queue.length) {
+        stopStudyTimer();
+        stopAutoRepeat();
+        toast('🎉 ئەم دەستەیە تەواو بوو!');
+        showV('home');
+        return;
+    }
+
+    // FEATURE (Motivation Engine): هەر ٥ کارتی ڕاستەقینە، کارتێکی هاندەر پیشان دەدرێت
+    state.session.cardsSinceQuote = (state.session.cardsSinceQuote || 0) + 1;
+    if (state.session.cardsSinceQuote >= 5) {
+        state.session.cardsSinceQuote = 0;
+        showMotivationCard();
+    } else {
+        renderCard();
+    }
+}
+
+/* ---------------- TTS v2: هەڵبژاردنی باشترین دەنگی بەردەست + خێرایی + دووبارەی خۆکار ---------------- */
+let availableVoices = [];
+let autoRepeatInterval = null;
+
+function loadVoices() {
+    if (!('speechSynthesis' in window)) return;
+    availableVoices = window.speechSynthesis.getVoices().filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
+    renderVoiceOptions();
+}
+if ('speechSynthesis' in window) {
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices; // زۆربەی وێبگەڕەکان دەنگەکان بە دواوە بار دەکەن
+}
+
+// خۆکارانە باشترین دەنگی بەردەست هەڵدەبژێرێت (وەک Google US English لە Chrome)،
+// جگە لەوەی بەکارهێنەر بە دەستی دەنگێکی دیاریکراوی هەڵبژاردبێت
+function pickBestVoiceObject() {
+    if (state.settings.voiceName) {
+        const chosen = availableVoices.find(v => v.name === state.settings.voiceName);
+        if (chosen) return chosen;
+    }
+    const localePref = state.settings.voice || 'en-US';
+    const qualityKeywords = ['Google', 'Natural', 'Premium', 'Enhanced', 'Neural'];
+    let best = availableVoices.find(v => v.lang === localePref && qualityKeywords.some(k => v.name.includes(k)));
+    if (!best) best = availableVoices.find(v => qualityKeywords.some(k => v.name.includes(k)) && v.lang.startsWith('en'));
+    if (!best) best = availableVoices.find(v => v.lang === localePref);
+    if (!best) best = availableVoices.find(v => v.lang.startsWith('en'));
+    return best || null;
+}
+
+function speakText(text) {
+    if (!text || !('speechSynthesis' in window)) return;
+    try {
+        window.speechSynthesis.cancel();
+        const msg = new SpeechSynthesisUtterance(text);
+        const voiceObj = pickBestVoiceObject();
+        if (voiceObj) msg.voice = voiceObj;
+        msg.lang = state.settings.voice || 'en-US';
+        msg.rate = state.settings.rate || 1;
+        msg.onerror = (e) => { console.warn('TTS error:', e.error); }; // BUG FIX (Phase 14): هەڵەی TTS ئێستا دەگیرێت
+        window.speechSynthesis.speak(msg);
+    } catch (e) { console.warn('speechSynthesis threw:', e); }
+}
+
+function speak(e) {
+    e.stopPropagation();
+    const card = state.session.queue[state.session.currentIndex];
+    if (!card) return;
+    speakText(card.en);
+}
+
+function stopAutoRepeat() { if (autoRepeatInterval) { clearInterval(autoRepeatInterval); autoRepeatInterval = null; } }
+
+function isEnglishShowingNow() {
+    const reversed = state.settings.dir === 'ku';
+    const flipped = document.getElementById('card-obj').classList.contains('flip');
+    return reversed ? flipped : !flipped;
+}
+
+// FEATURE (TTS v2): کاتێک ڕووی ئینگلیزی دەردەکەوێت خۆکارانە دەخوێنرێتەوە، و ئەگەر
+// "دووبارەی خۆکار" چالاک بێت، هەتا ٣ جار دووبارە دەبێتەوە
+function maybeAutoPlayEnglish() {
+    stopAutoRepeat();
+    if (!state.settings.autoPlay) return;
+    const card = state.session.queue[state.session.currentIndex];
+    if (!card) return;
+    speakText(card.en);
+    if (state.settings.autoRepeat) {
+        let count = 1;
+        autoRepeatInterval = setInterval(() => {
+            if (count >= 3) { stopAutoRepeat(); return; }
+            speakText(card.en);
+            count++;
+        }, 3000);
+    }
+}
+
+/* keyboard shortcuts while studying */
+document.addEventListener('keydown', (e) => {
+    const studyView = document.getElementById('study');
+    if (!studyView.classList.contains('active')) return;
+
+    if (document.getElementById('motivation-overlay').classList.contains('active')) {
+        if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); dismissMotivationCard(); }
+        return;
+    }
+
+    if (e.code === 'Space' || e.code === 'Enter') {
+        e.preventDefault();
+        flipCard();
+    } else if (['1', '2', '3', '4'].includes(e.key)) {
+        if (document.getElementById('card-obj').classList.contains('flip')) {
+            submitRate(Number(e.key));
+        }
+    }
+});
+
+/* ---------------- mastered archive ---------------- */
+function renderArchive() {
+    const list = document.getElementById('archive-list');
+    const mastered = state.cards.filter(c => c.status === 'mastered');
+    if (mastered.length === 0) {
+        list.innerHTML = `<p style="color:var(--muted); text-align:center; padding:20px 0;">هێشتا هیچ کارتێک تەواو فێرنەبوویت.</p>`;
+        return;
+    }
+    list.innerHTML = mastered.map(c => {
+        const dateStr = c.masteredDate ? new Date(c.masteredDate).toLocaleDateString() : '—';
+        return `<div class="manage-item">
+            <div>
+                <div style="color:white">${escapeHtml(c.en)}</div>
+                <div style="font-size:12px; color:var(--muted)">${escapeHtml(c.ku)} • 📅 ${dateStr} • ✅ ${c.reviewCount || 0} پێداچوونەوە • ❌ ${c.failCount || 0} هەڵە</div>
+            </div>
+            <div class="manage-actions">
+                <button class="icon-btn" onclick="restoreCard(${c.id})">↺ گەڕاندنەوە</button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function restoreCard(id) {
+    const card = state.cards.find(c => c.id === id);
+    if (!card) return;
+    card.status = 'reviewing';
+    card.interval = Math.max(1, Math.round((card.interval || 1) / 2));
+    card.due = Date.now();
+    save();
+    renderArchive();
+    toast('↺ کارتەکە گەڕایەوە بۆ خولی خوێندن');
+}
+
+/* ---------------- manage ---------------- */
+function escapeHtml(str) {
+    return (str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+}
+
+let manageSortBy = 'newest';
+let managePage = 0;
+let manageSearchDebounce = null;
+let selectedCardIds = new Set();
+const MANAGE_PAGE_SIZE = 50; // PERFORMANCE: لاپەڕەبەندی بۆ ئەوەی هەزاران کارت بەبێ کێشە پیشان بدرێن
+
+function onManageSearchInput() {
+    clearTimeout(manageSearchDebounce);
+    manageSearchDebounce = setTimeout(() => { managePage = 0; renderManage(); }, 200); // PERFORMANCE: debounce
+}
+
+function getSortedFilteredCards() {
+    const search = document.getElementById('search-input').value.toLowerCase();
+    const deckFilterEl = document.getElementById('manage-deck-filter');
+    const deckFilter = deckFilterEl ? deckFilterEl.value : '';
+    const filtered = state.cards.filter(c =>
+        (c.en.toLowerCase().includes(search) || c.ku.includes(search)) &&
+        (!deckFilter || c.deckId === deckFilter)
+    );
+    const sorters = {
+        due: (a, b) => a.due - b.due,
+        newest: (a, b) => b.created - a.created,
+        oldest: (a, b) => a.created - b.created,
+        forgotten: (a, b) => (b.failCount || 0) - (a.failCount || 0)
+    };
+    filtered.sort(sorters[manageSortBy] || sorters.newest);
+    return filtered;
+}
+
+function setManageSortBy(val) { manageSortBy = val; managePage = 0; renderManage(); }
+
+// FEATURE (Phase 6): ڕاستەوخۆ دەچێتە بەشی کارتەکان و ڕیزیان دەکات بەپێی زۆرترین لەبیرکراو
+function goToDifficultWords() {
+    manageSortBy = 'forgotten';
+    managePage = 0;
+    showV('manage');
+    const sortSelect = document.getElementById('manage-sort');
+    if (sortSelect) sortSelect.value = 'forgotten';
+}
+
+// FEATURE (Manage V2 — bulk move): کارتی هەڵبژێردراو دەگوازرێتەوە بۆ دەستەیەکی دیاریکراو
+function bulkMoveSelected() {
+    if (selectedCardIds.size === 0) { toast('هیچ کارتێک هەڵنەبژێردراوە'); return; }
+    const sel = document.getElementById('bulk-move-select');
+    const deckId = sel && sel.value;
+    if (!deckId) { toast('تکایە دەستەیەک هەڵبژێرە'); return; }
+    state.cards.forEach(c => { if (selectedCardIds.has(c.id)) c.deckId = deckId; });
+    save();
+    selectedCardIds.clear();
+    renderManage();
+    renderHome();
+    toast('✅ کارتەکان گواسترانەوە بۆ دەستەی نوێ');
+}
+
+function renderManage() {
+    const all = getSortedFilteredCards();
+    const totalPages = Math.max(1, Math.ceil(all.length / MANAGE_PAGE_SIZE));
+    managePage = Math.min(managePage, totalPages - 1);
+    const pageItems = all.slice(managePage * MANAGE_PAGE_SIZE, (managePage + 1) * MANAGE_PAGE_SIZE);
+
+    const list = document.getElementById('manage-list');
+    list.innerHTML = '';
+
+    if (all.length === 0) {
+        list.innerHTML = `<p style="color: var(--muted); text-align:center; padding: 20px 0;">هیچ کارتێک نەدۆزرایەوە.</p>`;
+        document.getElementById('manage-pagination').innerHTML = '';
+        updateSelectedCount();
+        return;
+    }
+
+    const statusIcons = { learning: '🌱', reviewing: '📘', mature: '🌳', mastered: '✅' };
+
+    // BUG FIX: دەکرا ڕیزبکرێن بەپێی "وادەی پێداچوونەوە"، بەڵام وادەکە خۆی هەرگیز نیشان نەدەدرا
+    function formatDueDate(c) {
+        if ((c.reviewCount || 0) === 0) return 'نوێ — هێشتا خوێندراوە نییە';
+        const diffMs = c.due - Date.now();
+        const diffDays = Math.round(diffMs / 86400000);
+        if (diffMs <= 0) return '⏰ دواکەوتووە — ئامادەیە بۆ پێداچوونەوە';
+        if (diffDays === 0) return '📅 ئەمڕۆ';
+        if (diffDays === 1) return '📅 بەیانی';
+        if (diffDays < 30) return `📅 دوای ${diffDays} ڕۆژ (${new Date(c.due).toLocaleDateString()})`;
+        return '📅 ' + new Date(c.due).toLocaleDateString();
+    }
+
+    pageItems.forEach(c => {
+        const item = document.createElement('div');
+        item.className = 'manage-item';
+        if (editingId === c.id) {
+            item.innerHTML = `
+                <div class="edit-form">
+                    <input id="edit-en-${c.id}" value="${escapeHtml(c.en)}" placeholder="English">
+                    <input id="edit-ku-${c.id}" value="${escapeHtml(c.ku)}" placeholder="کوردی">
+                    <input id="edit-mn-${c.id}" value="${escapeHtml(c.mn || '')}" placeholder="تێبینی">
+                    <div class="edit-form-actions">
+                        <button class="primary" onclick="saveEdit(${c.id})">پاشەکەوت</button>
+                        <button class="ghost" onclick="cancelEdit()">پاشگەزبوونەوە</button>
+                    </div>
+                </div>`;
+        } else {
+            const checked = selectedCardIds.has(c.id) ? 'checked' : '';
+            const isDifficult = (c.failCount || 0) >= 3; // FEATURE (Phase 6): وشە سەختەکان
+            item.innerHTML = `
+                <div style="display:flex; align-items:center; gap:10px; flex:1; min-width:0;">
+                    <input type="checkbox" ${checked} onchange="toggleCardSelect(${c.id}, this.checked)">
+                    <div style="min-width:0;">
+                        <div style="color: white">${statusIcons[c.status] || ''} ${escapeHtml(c.en)} ${isDifficult ? '<span class="dupe-badge" style="border-color:#ff5d6c; color:#ff5d6c; background:#ff5d6c22;">🔥 سەخت</span>' : ''}</div>
+                        <div style="font-size: 12px; color: var(--muted)">${escapeHtml(c.ku)}</div>
+                        <div style="font-size: 11px; color: var(--accent-2); margin-top:2px;">${formatDueDate(c)}</div>
+                    </div>
+                </div>
+                <div class="manage-actions">
+                    ${isDifficult ? `<button class="icon-btn" onclick="resetDifficulty(${c.id})" title="ڕێستارتکردنی ئاستی سەختی" aria-label="ڕێستارتکردنی ئاستی سەختی">🔄</button>` : ''}
+                    <button class="icon-btn" onclick="startEdit(${c.id})">دەستکاری</button>
+                    <button class="icon-btn danger" onclick="deleteCard(${c.id})">سڕینەوە</button>
+                </div>`;
+        }
+        list.appendChild(item);
+    });
+
+    renderManagePagination(totalPages);
+    updateSelectedCount();
+}
+
+function renderManagePagination(totalPages) {
+    const wrap = document.getElementById('manage-pagination');
+    if (totalPages <= 1) { wrap.innerHTML = ''; return; }
+    wrap.innerHTML = `
+        <button class="icon-btn" ${managePage === 0 ? 'disabled' : ''} onclick="changeManagePage(-1)" aria-label="لاپەڕەی پێشوو">⟵</button>
+        <span style="color:var(--muted); font-size:13px; align-self:center;">${managePage + 1} / ${totalPages}</span>
+        <button class="icon-btn" ${managePage >= totalPages - 1 ? 'disabled' : ''} onclick="changeManagePage(1)" aria-label="لاپەڕەی داهاتوو">⟶</button>`;
+}
+
+function changeManagePage(delta) { managePage += delta; renderManage(); }
+
+function toggleCardSelect(id, checked) {
+    if (checked) selectedCardIds.add(id); else selectedCardIds.delete(id);
+    updateSelectedCount();
+}
+
+function updateSelectedCount() {
+    const el = document.getElementById('manage-selected-count');
+    if (el) el.innerText = selectedCardIds.size;
+}
+
+function toggleManageSelectAll() {
+    const all = getSortedFilteredCards();
+    const allSelected = all.every(c => selectedCardIds.has(c.id));
+    all.forEach(c => allSelected ? selectedCardIds.delete(c.id) : selectedCardIds.add(c.id));
+    renderManage();
+}
+
+function deleteSelectedCards() {
+    if (selectedCardIds.size === 0) { toast('هیچ کارتێک هەڵنەبژێردراوە'); return; }
+    if (!confirm(`دڵنیایت لە سڕینەوەی ${selectedCardIds.size} کارت؟`)) return;
+    state.cards = state.cards.filter(c => !selectedCardIds.has(c.id));
+    selectedCardIds.clear();
+    save();
+    renderManage();
+    renderHome();
+    toast('✅ کارتە هەڵبژێردراوەکان سڕدرانەوە');
+}
+
+// ENHANCEMENT: توانای دەستکاریکردنی کارتی زیادکراو (پێشتر تەنها سڕینەوە دەکرا)
+function startEdit(id) { editingId = id; renderManage(); }
+function cancelEdit() { editingId = null; renderManage(); }
+
+function saveEdit(id) {
+    const en = document.getElementById(`edit-en-${id}`).value.trim();
+    const ku = document.getElementById(`edit-ku-${id}`).value.trim();
+    const mn = document.getElementById(`edit-mn-${id}`).value.trim();
+    if (!en || !ku) { toast('تکایە هەردوو خانە پڕبکەرەوە'); return; }
+    const card = state.cards.find(c => c.id === id);
+    if (card) { card.en = en; card.ku = ku; card.mn = mn; save(); }
+    editingId = null;
+    renderManage();
+    toast('✅ کارتەکە نوێکرایەوە');
+}
+
+function deleteCard(id) {
+    if (confirm('دڵنیایت لە سڕینەوەی ئەم کارتە؟')) {
+        state.cards = state.cards.filter(c => c.id !== id);
+        selectedCardIds.delete(id);
+        save();
+        renderManage();
+        renderHome();
+    }
+}
+
+// FEATURE (Phase 6, Difficult Words): ڕێستارتکردنی ئاستی سەختی — کارتەکە بەردەوام لەگەڵ
+// SRS ی ئاسایی دەمێنێتەوە، تەنها failCount ـی ڕێکدەخرێتەوە بۆ سەرلەنوێ هەڵسەنگاندن
+function resetDifficulty(id) {
+    const card = state.cards.find(c => c.id === id);
+    if (!card) return;
+    card.failCount = 0;
+    card.difficulty = 0;
+    save();
+    renderManage();
+    toast('🔄 ئاستی سەختی ڕێستارت کرا');
+}
+
+/* ---------------- settings ---------------- */
+function setDir(val) { state.settings.dir = val; syncSettingsUI(); save(); }
+function setDailyGoal(minutes) { state.settings.dailyGoalMin = minutes; syncSettingsUI(); renderMissions(); save(); }
+function setVoice(val) { state.settings.voice = val; syncSettingsUI(); renderVoiceOptions(); save(); }
+function setRate(val) { state.settings.rate = parseFloat(val); syncSettingsUI(); save(); }
+function toggleAutoPlay() { state.settings.autoPlay = !state.settings.autoPlay; syncSettingsUI(); save(); }
+function toggleAutoRepeat() { state.settings.autoRepeat = !state.settings.autoRepeat; syncSettingsUI(); save(); }
+function setVoiceName(name) { state.settings.voiceName = name || null; save(); }
+
+// FEATURE (TTS v2 voice selector): لیستی هەموو دەنگە ئینگلیزییەکانی بەردەست لەسەر ئامێرەکەت
+function renderVoiceOptions() {
+    const sel = document.getElementById('voice-name-select');
+    if (!sel) return;
+    const localeVoices = availableVoices.filter(v => v.lang === (state.settings.voice || 'en-US'));
+    const list = localeVoices.length ? localeVoices : availableVoices;
+    sel.innerHTML = '<option value="">-- خۆکارانە باشترین هەڵبژاردن --</option>' +
+        list.map(v => `<option value="${escapeHtml(v.name)}" ${state.settings.voiceName === v.name ? 'selected' : ''}>${escapeHtml(v.name)}</option>`).join('');
+}
+
+function syncSettingsUI() {
+    document.querySelectorAll('#goal-group .radio-pill').forEach(el => {
+        el.classList.toggle('active', parseInt(el.dataset.val, 10) === (state.settings.dailyGoalMin || 25));
+    });
+    document.querySelectorAll('#dir-group .radio-pill').forEach(el => {
+        el.classList.toggle('active', el.dataset.val === state.settings.dir);
+    });
+    document.querySelectorAll('#voice-group .radio-pill').forEach(el => {
+        el.classList.toggle('active', el.dataset.val === state.settings.voice);
+    });
+    document.querySelectorAll('#rate-group .radio-pill').forEach(el => {
+        el.classList.toggle('active', parseFloat(el.dataset.val) === (state.settings.rate || 1));
+    });
+    const autoplayEl = document.getElementById('autoplay-toggle');
+    if (autoplayEl) autoplayEl.classList.toggle('active', !!state.settings.autoPlay);
+    const autorepeatEl = document.getElementById('autorepeat-toggle');
+    if (autorepeatEl) autorepeatEl.classList.toggle('active', !!state.settings.autoRepeat);
+    renderVoiceOptions();
+}
+
+function exportData() {
+    try {
+        const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'E21_Backup.json';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        toast('✅ فایلی هەناردەکراو ئامادەیە');
+    } catch (err) {
+        console.error('Export failed:', err);
+        toast('❌ نەتوانرا هەناردەکردن — تکایە هەوڵبدەرەوە');
+    }
+}
+
+function triggerImport() { document.getElementById('file-input').click(); }
+
+function handleFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+        try {
+            const parsed = JSON.parse(event.target.result);
+            // FIX: پێشتر هیچ سەلماندنێک نەدەکرا؛ فایلێکی خراپ کراش دەکرد یان داتای هەڵە دادەنا.
+            if (!parsed || !Array.isArray(parsed.cards)) throw new Error('invalid format');
+            state = parsed;
+            if (!state.settings) state.settings = { voice: 'en-US', dir: 'en', rate: 1, autoPlay: false, autoRepeat: false };
+            if (!state.session) state.session = { queue: [], currentIndex: 0, deckId: null, cardsSinceQuote: 0 };
+            if (!state.progress) state.progress = { xp: 0, streak: 0, bestStreak: 0, lastStudyDate: null, daily: {}, totalPomodoros: 0 };
+            normalizeSettings();
+            state.cards = state.cards.map(migrateCard).map(sanitizeCard);
+            ensureDecks();
+            await save();
+            renderHome();
+            syncSettingsUI();
+            renderDeckManagerUI();
+            toast('✅ داتاکان هاوردە کران');
+        } catch (err) {
+            toast('❌ فایلەکە دروست نییە یان تێکچووە');
+        }
+    };
+    reader.onerror = () => toast('❌ هەڵە لە خوێندنەوەی فایل');
+    reader.readAsText(file);
+    e.target.value = '';
+}
+
+function wipeData() {
+    // FEATURE (V2 spec, Danger Zone): بۆ ڕێگری لە سڕینەوەی هەڵە، پێویستە بەکارهێنەر وشەی DELETE بنووسێت
+    const typed = prompt('ئەم کردارە هەمیشەیی و ناگەڕێتەوە. بۆ سڕینەوەی هەموو کارت و XP/streak ـەکانت، وشەی "DELETE" بنووسە:');
+    if (typed !== 'DELETE') {
+        if (typed !== null) toast('سڕینەوە هەڵوەشێنرایەوە — وشەکە ڕاست نەنووسرابوو');
+        return;
+    }
+    state.cards = [];
+    state.decks = [{ id: 'default', name: 'دەستەی سەرەکی', created: Date.now() }];
+    state.session = { queue: [], currentIndex: 0, deckId: null, cardsSinceQuote: 0 };
+    state.progress = { xp: 0, streak: 0, bestStreak: 0, lastStudyDate: null, daily: {}, totalPomodoros: 0 };
+    // FIX: پێشتر دوای save() ڕاستەوخۆ location.reload() بانگ دەکرا. لەبەر ئەوەی
+    // save() ئێستا async ـە، ئەمە دەیتوانی داتا لەناوبەرێت پێش تەواوبوونی پاشەکەوتکردن.
+    save();
+    renderHome();
+    renderDeckManagerUI();
+    toast('هەموو داتاکان سڕدرانەوە');
+}
+
+/* ---------------- init ---------------- */
+load();
+</script>
+</body>
+</html>
